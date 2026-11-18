@@ -1,0 +1,228 @@
+package com.cmc.launcher.ui.screens.main.control_editor.edit_layer
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.movtery.layer_controller.data.VisibilityType
+import com.movtery.layer_controller.observable.ObservableControlLayer
+import com.cmc.launcher.R
+import com.cmc.launcher.ui.components.ImePanContainer
+import com.cmc.launcher.ui.components.MarqueeText
+import com.cmc.launcher.ui.components.OwnOutlinedTextField
+import com.cmc.launcher.ui.components.SingleLineTextCheck
+import com.cmc.launcher.ui.components.fadeEdge
+import com.cmc.launcher.ui.components.rememberDialogMaxHeight
+import com.cmc.launcher.ui.components.verticalScrollWithBar
+import com.cmc.launcher.ui.screens.main.control_editor.InfoLayoutListItem
+import com.cmc.launcher.ui.screens.main.control_editor.InfoLayoutSwitchItem
+import com.cmc.launcher.ui.screens.main.control_editor.InfoLayoutTextItem
+import com.cmc.launcher.ui.screens.main.control_editor.getVisibilityText
+import com.cmc.launcher.ui.theme.cardColor
+import com.cmc.launcher.ui.theme.onCardColor
+
+@Composable
+fun EditControlLayerDialog(
+    layer: ObservableControlLayer,
+    onDismissRequest: () -> Unit,
+    onDelete: () -> Unit,
+    onMergeDownward: () -> Unit,
+    onCopy: () -> Unit,
+    onHideChange: (Boolean) -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnClickOutside = false,
+            decorFitsSystemWindows = false
+        )
+    ) {
+        ImePanContainer(
+            modifier = Modifier
+                .heightIn(max = rememberDialogMaxHeight())
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(all = 3.dp)
+                    .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))
+                    .wrapContentHeight(),
+                shadowElevation = 3.dp,
+                color = cardColor(false),
+                contentColor = onCardColor(),
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Column(
+                    modifier = Modifier.padding(all = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    MarqueeText(
+                        text = stringResource(R.string.control_editor_layers_attribute),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    val scrollState = rememberScrollState()
+
+                    var scrollToTop by remember { mutableStateOf(true) }
+                    LaunchedEffect(scrollToTop) {
+                        if (scrollToTop) {
+                            runCatching {
+                                scrollState.scrollTo(0)
+                                scrollToTop = false
+                            }
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fadeEdge(state = scrollState)
+                            .weight(1f, fill = false)
+                            .fillMaxWidth()
+                            .verticalScrollWithBar(state = scrollState),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        SingleLineTextCheck(
+                            text = layer.name,
+                            onSingleLined = { layer.name = it }
+                        )
+
+                        OwnOutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = layer.name,
+                            onValueChange = {
+                                layer.name = it
+                            },
+                            label = {
+                                Text(stringResource(R.string.control_editor_layers_attribute_name))
+                            },
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.large
+                        )
+
+                        InfoLayoutListItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.control_editor_edit_visibility),
+                            items = VisibilityType.entries,
+                            selectedItem = layer.visibilityType,
+                            onItemSelected = { layer.visibilityType = it },
+                            getItemText = { it.getVisibilityText() }
+                        )
+
+                        InfoLayoutSwitchItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.control_editor_layers_attribute_hide),
+                            value = layer.editorHide,
+                            onValueChange = {
+                                layer.editorHide = it
+                                onHideChange(it)
+                            }
+                        )
+
+                        InfoLayoutSwitchItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.control_editor_layers_attribute_hide_when_mouse),
+                            value = layer.hideWhenMouse,
+                            onValueChange = { layer.hideWhenMouse = it }
+                        )
+
+                        InfoLayoutSwitchItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.control_editor_layers_attribute_hide_when_gamepad),
+                            value = layer.hideWhenGamepad,
+                            onValueChange = { layer.hideWhenGamepad = it }
+                        )
+
+                        InfoLayoutTextItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.control_editor_layers_merge_downward),
+                            icon = {
+                                Icon(
+                                    modifier = Modifier
+                                        .rotate(180f)
+                                        .size(20.dp),
+                                    painter = painterResource(R.drawable.ic_merge),
+                                    contentDescription = null
+                                )
+                            },
+                            onClick = {
+                                onDismissRequest()
+                                onMergeDownward()
+                            }
+                        )
+
+                        InfoLayoutTextItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.generic_copy),
+                            icon = {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(R.drawable.ic_copy_all_outlined),
+                                    contentDescription = null
+                                )
+                            },
+                            onClick = {
+                                onCopy()
+                                scrollToTop = true
+                            }
+                        )
+
+                        Spacer(Modifier)
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FilledTonalButton(
+                            modifier = Modifier.weight(1f, fill = false),
+                            onClick = onDelete
+                        ) {
+                            MarqueeText(
+                                text = stringResource(R.string.generic_delete)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Button(
+                            modifier = Modifier.weight(1f, fill = false),
+                            onClick = onDismissRequest
+                        ) {
+                            MarqueeText(
+                                text = stringResource(R.string.generic_close)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

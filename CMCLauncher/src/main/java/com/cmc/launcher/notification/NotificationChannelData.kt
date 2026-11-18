@@ -1,0 +1,22 @@
+package com.cmc.launcher.notification
+
+import android.app.NotificationManager.IMPORTANCE_LOW
+import android.content.Context
+import com.cmc.launcher.R
+
+enum class NotificationChannelData(
+    val channelId: String,
+    val channelName: (Context) -> String,
+    val channelDescription: ((Context) -> String)?,
+    val level: Int,
+    val showBadge: Boolean = true
+) {
+
+    JVM_SERVICE_CHANNEL("jvm.service", { it.getString(R.string.notification_data_jvm_service_name) }, null, IMPORTANCE_LOW),
+
+    GAME_SERVICE_CHANNEL("game.service", { it.getString(R.string.notification_jvm_running_name) }, null, IMPORTANCE_LOW),
+
+    TASK_SERVICE_CHANNEL("task.service", { it.getString(R.string.notification_task_service_name) }, null, IMPORTANCE_LOW),
+
+    TERRACOTTA_VPN_CHANNEL("terracotta_vpn_channel", { "Terracotta VPN" }, { it.getString(R.string.terracotta_terracotta) }, IMPORTANCE_LOW, false)
+}
