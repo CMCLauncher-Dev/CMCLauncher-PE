@@ -223,10 +223,10 @@ CMCLauncherPE/
 ### 环境要求
 
 - Android Studio 或命令行 Gradle 环境
-- Android SDK：最低 API 26，目标 API 35
+- Android SDK：编译 API 37.2，最低 API 26，目标 API 34
 - JDK 21
-- Rust 工具链（含 Android 目标）
-- Android NDK
+- Rust 工具链、`cargo-ndk` 和四个 Android Rust 目标
+- Android NDK 25.2.9519653
 
 ### 命令行构建
 
@@ -238,11 +238,11 @@ cd CMCLauncher-PE
 
 产物位于 `CMCLauncher/build/outputs/apk/debug/`。
 
-`-Darch` 可选 `arm64`、`arm32`、`x86_64`、`all`，决定打包哪些架构的本地库与运行时。
+`-Darch` 可选 `arm64`、`arm`、`x86`、`x86_64`、`all`，决定打包哪些架构的本地库与运行时。
 
 ### 自动构建
 
-仓库已配置 GitHub Actions：推送到 `main` 分支自动触发构建，成功后自动发布到 Releases。也可以在 Actions 页面手动触发。
+推送到 `main` 或 `codex/ui-refactor`，或向 `main` 提交 PR 时，GitHub Actions 会构建 ARM64 调试 APK。也可以在 Actions 页面手动运行 **Build Android APK**。构建成功后，在对应运行的 **Artifacts** 中下载 `cmclauncher-pe-debug-arm64`，产物保留 14 天。
 
 ## 项目结构
 
