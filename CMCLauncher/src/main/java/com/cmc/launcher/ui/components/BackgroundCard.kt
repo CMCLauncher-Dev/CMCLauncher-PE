@@ -9,17 +9,16 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
-import com.cmc.launcher.ui.theme.cmc.Cmc
 import com.cmc.launcher.ui.theme.cardColor
 import com.cmc.launcher.ui.theme.cardTitleColor
 import com.cmc.launcher.ui.theme.onCardColor
@@ -53,7 +52,7 @@ fun BackgroundCard(
         shape = shape,
         colors = colors,
         elevation = elevation,
-        border = border ?: cmcCardBorder(),
+        border = border ?: cardOutline(),
     ) {
         Column(
             modifier = Modifier
@@ -63,16 +62,8 @@ fun BackgroundCard(
     }
 }
 
-private fun cmcCardBorder(): BorderStroke = BorderStroke(
-    width = 1.dp,
-    brush = Brush.linearGradient(
-        listOf(
-            Color.White.copy(alpha = 0.45f),
-            Color.White.copy(alpha = 0.12f),
-            Color.Transparent
-        )
-    )
-)
+@Composable
+private fun cardOutline() = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
 
 @Composable
 fun BackgroundCard(
@@ -96,7 +87,7 @@ fun BackgroundCard(
         shape = shape,
         colors = colors,
         elevation = elevation,
-        border = border ?: cmcCardBorder(),
+        border = border ?: cardOutline(),
         onClick = onClick,
         enabled = enabled,
     ) {

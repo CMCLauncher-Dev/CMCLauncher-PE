@@ -62,7 +62,7 @@
     <string name="generic_view">查看</string>
     <!--  页面标题  -->
     <string name="page_title_version_list">版本列表</string>
-    <string name="page_title_version_manage">管理版本</string>
+    <string name="page_title_version_manage">版本管理</string>
     <string name="page_title_account_list">账号列表</string>
     <string name="page_title_select_files">选择路径</string>
     <!--  文件  -->
@@ -178,6 +178,9 @@
     <string name="unpack_screen_launcher">启动器依赖的一些组件</string>
     <string name="unpack_screen_jna">让 Minecraft 能直接调用操作系统的底层功能</string>
     <!--  主菜单  -->
+    <string name="home_pinned_title">快捷卡片</string>
+    <string name="home_pinned_empty">在版本或服务器的菜单中选择“%1$s”。</string>
+    <string name="home_download_game">下载游戏</string>
     <string name="main_launch_game">启动游戏</string>
     <string name="launch_check_mods">检查模组</string>
     <string name="main_task_menu">任务菜单</string>
@@ -1551,7 +1554,7 @@
     <string name="guide_main_account">点击此处可进入账号管理页面，你可以添加或管理 Minecraft 账号</string>
     <string name="guide_main_version_list">点击这里可打开版本列表，你将来安装的所有游戏版本都会在这里列举出来哦</string>
     <string name="guide_main_card_drag_title">不太喜欢操作栏的位置？</string>
-    <string name="guide_main_card_drag_text">你可以长按卡片提起它，拖动并让它停靠到另一侧哦</string>
+    <string name="guide_main_card_drag_text">在宽屏布局下，长按启动面板上方的拖动手柄，即可将面板停靠到另一侧。</string>
     <string name="guide_main_card_tip_title">这里太空旷了？</string>
     <string name="guide_main_card_tip_text">别担心，你可以将一些内容作为卡片放到这里来自由排布，只要它提供了“%s”选项</string>
     <string name="guide_editor_welcome_title">欢迎使用控制布局编辑器！</string>

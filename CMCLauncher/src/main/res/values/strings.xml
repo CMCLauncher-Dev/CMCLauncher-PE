@@ -83,7 +83,7 @@
     <!-- Title of the version list page -->
     <string name="page_title_version_list">版本列表</string>
     <!-- Title of the manage versions page -->
-    <string name="page_title_version_manage">版本管理</string>
+    <string name="page_title_version_manage">Manage versions</string>
     <!-- Title of the account list page -->
     <string name="page_title_account_list">账号列表</string>
     <!-- Title of the file and folder picker screen -->
@@ -290,6 +290,9 @@
     <string name="unpack_screen_launcher">Essential launcher components</string>
     <!-- Description of JNA in the first run extraction list -->
     <string name="unpack_screen_jna">Enables Minecraft to directly call low-level OS functions</string>
+    <string name="home_pinned_title">Pinned cards</string>
+    <string name="home_pinned_empty">Choose “%1$s” in a version or server menu.</string>
+    <string name="home_download_game">Download game</string>
     <!-- Launch button on the home screen; also the title of the final launch step -->
     <string name="main_launch_game">Launch</string>
     <!-- Title of the launch step that scans the installed mods -->
@@ -3009,7 +3012,7 @@
     <!-- Title of the guide card for the draggable action menu card -->
     <string name="guide_main_card_drag_title">Not happy with where the action menu is?</string>
     <!-- Body of the guide card explaining how to move the action menu card to the other side -->
-    <string name="guide_main_card_drag_text">Long-press the card to pick it up, then drag and drop it to dock on the other side</string>
+    <string name="guide_main_card_drag_text">In the wide layout, press and hold the handle to drag the launch panel to the other side.</string>
     <!-- Title of the guide card suggesting to pin content onto the main screen as cards -->
     <string name="guide_main_card_tip_title">Looking a bit empty here?</string>
     <!-- Body of the guide card about pinning contents as cards on the main screen; %s is the name of the pin-to-home option -->

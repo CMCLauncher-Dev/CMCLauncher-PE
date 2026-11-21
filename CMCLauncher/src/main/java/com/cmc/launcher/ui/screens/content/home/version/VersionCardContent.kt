@@ -1,12 +1,8 @@
 package com.cmc.launcher.ui.screens.content.home.version
 
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.text.font.FontWeight
-import com.cmc.launcher.ui.theme.cmc.Cmc
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,20 +36,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.takeOrElse
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.movtery.cardgrid.model.CardInteraction
-import com.movtery.cardgrid.model.CardSize
-import com.movtery.cardgrid.model.CardSizeClass
-import com.movtery.cardgrid.model.CardState
 import com.cmc.launcher.R
 import com.cmc.launcher.game.version.installed.Version
 import com.cmc.launcher.ui.components.LittleTextLabel
 import com.cmc.launcher.ui.screens.content.elements.VersionIconImage
 import com.cmc.launcher.ui.screens.content.home.CardIconShape
+import com.movtery.cardgrid.model.CardInteraction
+import com.movtery.cardgrid.model.CardSize
+import com.movtery.cardgrid.model.CardSizeClass
+import com.movtery.cardgrid.model.CardState
 
 val LocalHomeCardLauncher = staticCompositionLocalOf<(Version) -> Unit> { {} }
 
@@ -396,8 +392,8 @@ private fun TextLaunchButton(version: Version, modifier: Modifier = Modifier) {
     val onLaunch = LocalHomeCardLauncher.current
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(Brush.horizontalGradient(listOf(Cmc.Accent, Cmc.Blue)))
+            .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onLaunch(version) }
             .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
@@ -406,14 +402,14 @@ private fun TextLaunchButton(version: Version, modifier: Modifier = Modifier) {
                 modifier = Modifier.size(15.dp),
                 painter = painterResource(R.drawable.ic_play_arrow_filled),
                 contentDescription = null,
-                tint = Cmc.Ink
+                tint = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 modifier = Modifier.padding(start = 5.dp),
                 text = stringResource(R.string.main_launch_game),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
-                color = Cmc.Ink
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -424,8 +420,8 @@ private fun CompactLaunchButton(version: Version, modifier: Modifier = Modifier)
     val onLaunch = LocalHomeCardLauncher.current
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(Brush.horizontalGradient(listOf(Cmc.Accent, Cmc.Blue)))
+            .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onLaunch(version) },
         contentAlignment = Alignment.Center
     ) {
@@ -434,14 +430,14 @@ private fun CompactLaunchButton(version: Version, modifier: Modifier = Modifier)
                 modifier = Modifier.size(13.dp),
                 painter = painterResource(R.drawable.ic_play_arrow_filled),
                 contentDescription = null,
-                tint = Cmc.Ink
+                tint = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 modifier = Modifier.padding(start = 4.dp),
                 text = stringResource(R.string.main_launch_game),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
-                color = Cmc.Ink
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -454,7 +450,7 @@ private fun IconLaunchButton(version: Version, modifier: Modifier = Modifier) {
         modifier = modifier
             .size(34.dp)
             .clip(CircleShape)
-            .background(Brush.linearGradient(listOf(Cmc.Accent, Cmc.Blue)))
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onLaunch(version) },
         contentAlignment = Alignment.Center
     ) {
@@ -462,7 +458,7 @@ private fun IconLaunchButton(version: Version, modifier: Modifier = Modifier) {
             modifier = Modifier.size(17.dp),
             painter = painterResource(R.drawable.ic_play_arrow_filled),
             contentDescription = stringResource(R.string.main_launch_game),
-            tint = Cmc.Ink
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }

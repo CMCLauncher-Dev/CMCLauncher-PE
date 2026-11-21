@@ -1,34 +1,36 @@
 package com.cmc.launcher.ui.screens.main
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.clickable
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,17 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import com.cmc.launcher.BuildKeys
@@ -56,12 +55,11 @@ import com.cmc.launcher.game.version.installed.Version
 import com.cmc.launcher.game.version.installed.VersionsManager
 import com.cmc.launcher.path.PathManager
 import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.setting.enums.isLauncherInDarkTheme
 import com.cmc.launcher.ui.AndroidStringText
 import com.cmc.launcher.ui.androidText
 import com.cmc.launcher.ui.components.BackgroundCard
 import com.cmc.launcher.ui.components.CardTitleLayout
-import com.cmc.launcher.ui.components.TextRailItem
-import com.cmc.launcher.ui.guide.sendStartGuideOnce
 import com.cmc.launcher.ui.screens.BackStackNavKey
 import com.cmc.launcher.ui.screens.NavStateHost
 import com.cmc.launcher.ui.screens.NestedNavDisplay
@@ -86,12 +84,9 @@ import com.cmc.launcher.ui.screens.onBack
 import com.cmc.launcher.ui.screens.rememberTransitionSpec
 import com.cmc.launcher.ui.theme.backgroundColor
 import com.cmc.launcher.ui.theme.cardColor
-import com.cmc.launcher.ui.theme.cmc.CmcBrandChip
 import com.cmc.launcher.ui.theme.cmc.cmcBackgroundBrush
-import com.cmc.launcher.setting.enums.isLauncherInDarkTheme
 import com.cmc.launcher.ui.theme.onBackgroundColor
 import com.cmc.launcher.ui.theme.onCardColor
-import com.cmc.launcher.utils.animation.getAnimateTween
 import com.cmc.launcher.utils.file.formatFileSize
 import com.cmc.launcher.viewmodel.ErrorViewModel
 import com.cmc.launcher.viewmodel.EventViewModel
@@ -111,12 +106,11 @@ fun MainScreen(
     submitError: (ErrorViewModel.ThrowableMessage) -> Unit
 ) {
 
-    var taskRunning by remember { mutableStateOf(true) }
+    var hasRunningTasks by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         TaskSystem.tasksFlow.collect { tasks ->
-            val noTasks = tasks.isEmpty()
-            eventViewModel.sendKeepScreen(!noTasks)
-            taskRunning = noTasks
+            hasRunningTasks = tasks.isNotEmpty()
+            eventViewModel.sendKeepScreen(hasRunningTasks)
         }
     }
 
@@ -155,16 +149,13 @@ fun MainScreen(
                 .fillMaxSize()
         ) {
             TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp),
+                modifier = Modifier.fillMaxWidth(),
                 mainScreenKey = mainScreenKey,
                 inLauncherScreen = inLauncherScreen,
-                taskRunning = taskRunning,
+                hasRunningTasks = hasRunningTasks,
                 isTasksExpanded = isTaskMenuExpanded,
-                contentColor = onBackgroundColor(),
                 onScreenBack = {
-                    screenBackStackModel.mainScreen.backStack.removeFirstOrNull()
+                    onBack(screenBackStackModel.mainScreen.backStack)
                 },
                 toMainScreen = toMainScreen,
                 toSettingsScreen = {
@@ -215,7 +206,8 @@ fun MainScreen(
                     isExpanded = isTaskMenuExpanded,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .fillMaxWidth(0.3f)
+                        .widthIn(max = 420.dp)
+                        .fillMaxWidth(0.92f)
                         .align(Alignment.CenterStart)
                         .padding(all = 6.dp)
                 ) {
@@ -226,14 +218,20 @@ fun MainScreen(
     }
 }
 
+private class LauncherNavigationAction(
+    @DrawableRes val icon: Int,
+    @StringRes val label: Int,
+    val selected: Boolean = false,
+    val onClick: () -> Unit
+)
+
 @Composable
-private fun <E: TitledNavKey> TopBar(
-    mainScreenKey: E?,
+private fun TopBar(
+    mainScreenKey: TitledNavKey?,
     inLauncherScreen: Boolean,
-    taskRunning: Boolean,
+    hasRunningTasks: Boolean,
     isTasksExpanded: Boolean,
     modifier: Modifier = Modifier,
-    contentColor: Color,
     onScreenBack: () -> Unit,
     toMainScreen: () -> Unit,
     toSettingsScreen: () -> Unit,
@@ -242,196 +240,194 @@ private fun <E: TitledNavKey> TopBar(
     openFileManager: () -> Unit,
     changeExpandedState: () -> Unit,
 ) {
+    val colors = MaterialTheme.colorScheme
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val download = LauncherNavigationAction(
+        icon = R.drawable.ic_download_2_filled,
+        label = R.string.generic_download,
+        selected = mainScreenKey is NestedNavKey.Download,
+        onClick = toDownloadScreen
+    )
+    val otherActions = listOf(
+        LauncherNavigationAction(
+            icon = R.drawable.ic_group_filled,
+            label = R.string.terracotta_terracotta,
+            selected = mainScreenKey is NormalNavKey.Multiplayer,
+            onClick = toMultiplayerScreen
+        ),
+        LauncherNavigationAction(
+            icon = R.drawable.ic_folder_filled,
+            label = R.string.fm_activity_name,
+            onClick = openFileManager
+        ),
+        LauncherNavigationAction(
+            icon = R.drawable.ic_settings_filled,
+            label = R.string.generic_setting,
+            selected = mainScreenKey is NestedNavKey.Settings,
+            onClick = toSettingsScreen
+        )
+    )
 
-    val inMultiplayerScreen = mainScreenKey is NormalNavKey.Multiplayer
-    val inDownloadScreen = mainScreenKey is NestedNavKey.Download
-    val inSettingsScreen = mainScreenKey is NestedNavKey.Settings
-
-    CompositionLocalProvider(
-        LocalContentColor provides contentColor
+    Surface(
+        modifier = modifier,
+        color = colors.surfaceContainerLow,
+        contentColor = colors.onSurface
     ) {
-        ConstraintLayout(modifier = modifier) {
-            val (backCenter, title, endButtons) = createRefs()
-
-            val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
-            Row(
-                modifier = Modifier
-                    .constrainAs(backCenter) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .fillMaxHeight()
-            ) {
-                if (!inLauncherScreen) {
-                    Row(modifier = Modifier.fillMaxHeight()) {
-                        Spacer(Modifier.width(12.dp))
-
-                        IconButton(
-                            modifier = Modifier.fillMaxHeight(),
-                            onClick = {
-                                if (!inLauncherScreen) {
-
-                                    backDispatcher?.onBackPressed() ?: run {
-                                        onScreenBack()
-                                    }
-                                }
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.ic_arrow_back),
-                                contentDescription = stringResource(R.string.generic_back)
-                            )
-                        }
-
-                        IconButton(
-                            modifier = Modifier.fillMaxHeight(),
-                            onClick = {
-                                if (!inLauncherScreen) {
-
-                                    toMainScreen()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_home_filled),
-                                contentDescription = stringResource(R.string.generic_main_menu)
+        Column {
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                val compact = maxWidth < 600.dp
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 56.dp)
+                        .padding(horizontal = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!inLauncherScreen) {
+                        ToolbarIcon(
+                            icon = R.drawable.ic_arrow_back,
+                            label = R.string.generic_back,
+                            onClick = { backDispatcher?.onBackPressed() ?: onScreenBack() }
+                        )
+                        if (!compact) {
+                            ToolbarIcon(
+                                icon = R.drawable.ic_home_filled,
+                                label = R.string.generic_main_menu,
+                                onClick = toMainScreen
                             )
                         }
                     }
-                }
-            }
-            val parentRes = mainScreenKey?.title
-            val childRes = (mainScreenKey as? BackStackNavKey<*>)?.currentKey?.title
-            Box(
-                modifier = Modifier.constrainAs(title) {
-                    centerVerticallyTo(parent)
-                    start.linkTo(backCenter.end, margin = 16.dp)
-                }
-            ) {
-                val parent = parentRes
-                val child = childRes
-                val style = MaterialTheme.typography.titleMedium
-                val softWarp = false
-                val maxLines = 1
-                if (parent == null) {
-                    CmcBrandChip()
-                } else {
-                    val titleText = if (child != null) {
-                        androidText(parent, androidText(" - "), child)
+
+                    val parentTitle = mainScreenKey?.title
+                    val childTitle = (mainScreenKey as? BackStackNavKey<*>)?.currentKey?.title
+                    val titleModifier = Modifier.weight(1f).padding(horizontal = 6.dp)
+                    val titleStyle = MaterialTheme.typography.titleMedium
+                    if (inLauncherScreen) {
+                        Row(
+                            modifier = titleModifier,
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(34.dp),
+                                painter = painterResource(R.drawable.ic_cmc_logo),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+                            Text(
+                                text = BuildKeys.LAUNCHER_NAME,
+                                style = titleStyle,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     } else {
-                        parent
-                    }
-
-                    AndroidStringText(
-                        text = titleText,
-                        style = style,
-                        softWrap = softWarp,
-                        maxLines = maxLines
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .constrainAs(endButtons) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end, margin = 12.dp)
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                if (!(isTasksExpanded || taskRunning)) {
-                    IconButton(
-                        onClick = { changeExpandedState() }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(22.dp),
-                            painter = painterResource(R.drawable.ic_assignment_filled),
-                            contentDescription = stringResource(R.string.main_task_menu),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        val title = when {
+                            parentTitle == null -> androidText(BuildKeys.LAUNCHER_NAME)
+                            childTitle == null -> parentTitle
+                            else -> androidText(parentTitle, androidText(" · "), childTitle)
+                        }
+                        AndroidStringText(
+                            modifier = titleModifier,
+                            text = title,
+                            style = titleStyle,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
+
+                    if (hasRunningTasks) {
+                        ToolbarIcon(
+                            icon = R.drawable.ic_assignment_filled,
+                            label = R.string.main_task_menu,
+                            selected = isTasksExpanded,
+                            onClick = changeExpandedState
+                        )
+                    }
+                    val toolbarActions = if (compact) listOf(download) else listOf(download) + otherActions
+                    toolbarActions.forEach { action ->
+                        ToolbarIcon(
+                            icon = action.icon,
+                            label = action.label,
+                            selected = action.selected,
+                            onClick = { if (!action.selected) action.onClick() }
+                        )
+                    }
+                    if (compact) {
+                        val actions = if (inLauncherScreen) {
+                            otherActions
+                        } else {
+                            listOf(
+                                LauncherNavigationAction(
+                                    icon = R.drawable.ic_home_filled,
+                                    label = R.string.generic_main_menu,
+                                    onClick = toMainScreen
+                                )
+                            ) + otherActions
+                        }
+                        ToolbarOverflow(actions)
+                    }
                 }
-
-                TopBarIconItem(
-                    selected = false,
-                    painter = painterResource(R.drawable.ic_folder_filled),
-                    text = null,
-                    onClick = openFileManager
-                )
-
-                TopBarIconItem(
-                    selected = inMultiplayerScreen,
-                    painter = painterResource(R.drawable.ic_group_filled),
-                    text = null,
-                    onClick = {
-                        if (!inMultiplayerScreen) toMultiplayerScreen()
-                    },
-                )
-
-                TopBarIconItem(
-                    selected = inDownloadScreen,
-                    painter = painterResource(R.drawable.ic_download_2_filled),
-                    text = null,
-                    onClick = {
-                        if (!inDownloadScreen) toDownloadScreen()
-                    },
-                )
-
-                TopBarIconItem(
-                    selected = inSettingsScreen,
-                    painter = painterResource(R.drawable.ic_settings_filled),
-                    text = null,
-                    onClick = {
-                        if (!inSettingsScreen) toSettingsScreen()
-                    },
-                )
             }
+            HorizontalDivider(color = colors.outlineVariant)
         }
     }
 }
 
 @Composable
-private fun TopBarIconItem(
-    selected: Boolean,
-    painter: Painter,
-    text: String?,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+private fun ToolbarIcon(
+    @DrawableRes icon: Int,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    selected: Boolean = false
 ) {
-    val iconSize = if (text != null) 22.dp else 24.dp
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(
-                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)
-                else Color.Transparent
-            )
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+    val colors = MaterialTheme.colorScheme
+    IconButton(
+        onClick = onClick,
+        modifier = if (selected) Modifier.semantics { this.selected = true } else Modifier,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = if (selected) colors.primaryContainer else Color.Transparent,
+            contentColor = if (selected) colors.onPrimaryContainer else colors.onSurface
+        )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                modifier = Modifier.size(iconSize),
-                painter = painter,
-                contentDescription = text,
-                tint = if (selected) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (text != null) {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (selected) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant
+        Icon(
+            modifier = Modifier.size(22.dp),
+            painter = painterResource(icon),
+            contentDescription = stringResource(label)
+        )
+    }
+}
+
+@Composable
+private fun ToolbarOverflow(actions: List<LauncherNavigationAction>) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        ToolbarIcon(
+            icon = R.drawable.ic_more_vert,
+            label = R.string.generic_more,
+            onClick = { expanded = true }
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            actions.forEach { action ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(action.label)) },
+                    leadingIcon = {
+                        Icon(painter = painterResource(action.icon), contentDescription = null)
+                    },
+                    trailingIcon = if (action.selected) {
+                        { Icon(painter = painterResource(R.drawable.ic_check), contentDescription = null) }
+                    } else {
+                        null
+                    },
+                    modifier = if (action.selected) {
+                        Modifier.semantics { selected = true }
+                    } else {
+                        Modifier
+                    },
+                    onClick = {
+                        expanded = false
+                        if (!action.selected) action.onClick()
+                    }
                 )
             }
         }

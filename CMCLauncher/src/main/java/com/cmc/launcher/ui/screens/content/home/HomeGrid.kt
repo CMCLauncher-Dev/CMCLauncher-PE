@@ -1,7 +1,6 @@
 package com.cmc.launcher.ui.screens.content.home
 
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,11 +20,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -39,23 +37,27 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.movtery.cardgrid.model.CardRect
-import com.movtery.cardgrid.state.CardGridState
-import com.movtery.cardgrid.state.CardSeed
-import com.movtery.cardgrid.ui.CardGrid
-import com.movtery.cardgrid.ui.CardGridAutoScroll
 import com.cmc.launcher.R
 import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.ui.components.BackgroundCard
 import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
 import com.cmc.launcher.ui.screens.content.home.server.ServerCardManager
 import com.cmc.launcher.ui.screens.content.home.server.ServerCardSettingsHost
 import com.cmc.launcher.ui.screens.content.home.version.VersionCardManager
 import com.cmc.launcher.ui.theme.cardColor
 import com.cmc.launcher.ui.theme.onCardColor
+import com.movtery.cardgrid.model.CardRect
+import com.movtery.cardgrid.state.CardGridState
+import com.movtery.cardgrid.state.CardSeed
+import com.movtery.cardgrid.ui.CardGrid
+import com.movtery.cardgrid.ui.CardGridAutoScroll
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 private sealed interface HomeCardOperation {
@@ -68,6 +70,8 @@ private sealed interface HomeCardOperation {
 fun HomeGrid(
     state: CardGridState,
     isVisible: Boolean,
+    onBrowseVersions: () -> Unit,
+    onDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -173,25 +177,23 @@ fun HomeGrid(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .padding(horizontal = 6.dp)
+                .padding(top = 12.dp, bottom = if (state.isAdjusting) 64.dp else 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val systemCards = HomeCards.systemCards()
-            if (!systemCards.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    systemCards.forEach { systemCard ->
-                        key(systemCard.id) {
-                            Box(modifier = Modifier.padding(horizontal = 6.dp)) {
-                                systemCard.content()
-                            }
-                        }
-                    }
-                }
+            HomeShortcuts(
+                modifier = Modifier.padding(horizontal = 10.dp),
+                onBrowseVersions = onBrowseVersions,
+                onDownload = onDownload
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 10.dp).semantics { heading() },
+                text = stringResource(R.string.home_pinned_title),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium
+            )
+            if (state.cards.isEmpty()) {
+                EmptyHomeCards(modifier = Modifier.padding(horizontal = 10.dp))
             }
 
             CardGrid(
@@ -212,9 +214,10 @@ fun HomeGrid(
             scrollState = scrollState
         )
 
-        if (state.isAdjusting)  {
+        if (state.isAdjusting) {
             AdjustingBar(
                 state = state,
+                modifier = Modifier.align(Alignment.BottomEnd),
                 onShowSettings = {
                     operation = HomeCardOperation.ServerCardSettings(it)
                 }
@@ -226,6 +229,98 @@ fun HomeGrid(
         operation = operation,
         onChange = { operation = it }
     )
+}
+
+@Composable
+private fun HomeShortcuts(
+    onBrowseVersions: () -> Unit,
+    onDownload: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        HomeShortcut(
+            modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_package_2_outlined,
+            label = stringResource(R.string.page_title_version_manage),
+            onClick = onBrowseVersions
+        )
+        HomeShortcut(
+            modifier = Modifier.weight(1f),
+            icon = R.drawable.ic_download_2_outlined,
+            label = stringResource(R.string.home_download_game),
+            onClick = onDownload
+        )
+    }
+}
+
+@Composable
+private fun HomeShortcut(
+    @DrawableRes icon: Int,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+    BackgroundCard(
+        modifier = modifier,
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.extraSmall,
+                color = colors.primaryContainer,
+                contentColor = colors.onPrimaryContainer
+            ) {
+                Icon(
+                    modifier = Modifier.padding(6.dp).size(20.dp),
+                    painter = painterResource(icon),
+                    contentDescription = null
+                )
+            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyHomeCards(modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
+    BackgroundCard(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_dashboard_outlined),
+                contentDescription = null,
+                tint = colors.primary
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(
+                    R.string.home_pinned_empty,
+                    stringResource(R.string.home_add_version_card)
+                ),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
 }
 
 @Composable
@@ -247,7 +342,8 @@ private fun HomeCardOperation(
 @Composable
 private fun AdjustingBar(
     state: CardGridState,
-    onShowSettings: (String) -> Unit
+    onShowSettings: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val adjustingId = state.adjustingCardId
     val isServerCard = remember(state.cards, adjustingId) {
@@ -255,8 +351,8 @@ private fun AdjustingBar(
     }
 
     Surface(
-        modifier = Modifier
-            .padding(all = 3.dp)
+        modifier = modifier
+            .padding(10.dp)
             .barGuard(),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -267,10 +363,10 @@ private fun AdjustingBar(
             modifier = Modifier.padding(all = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (isServerCard && adjustingId != null)  {
+            if (isServerCard && adjustingId != null) {
                 IconButton(
-                    modifier = Modifier.size(34.dp),
-                    onClick = { adjustingId?.let(onShowSettings) }
+                    modifier = Modifier.size(48.dp),
+                    onClick = { onShowSettings(adjustingId) }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_settings_filled),
@@ -281,7 +377,7 @@ private fun AdjustingBar(
             }
 
             IconButton(
-                modifier = Modifier.size(34.dp),
+                modifier = Modifier.size(48.dp),
                 enabled = adjustingId != null,
                 onClick = { adjustingId?.let(state::removeCard) }
             ) {
@@ -295,7 +391,7 @@ private fun AdjustingBar(
             Spacer(Modifier.width(2.dp))
 
             IconButton(
-                modifier = Modifier.size(34.dp),
+                modifier = Modifier.size(48.dp),
                 onClick = { state.exitAdjusting() }
             ) {
                 Icon(
