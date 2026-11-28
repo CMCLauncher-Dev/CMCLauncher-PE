@@ -158,6 +158,7 @@ object Fetcher {
         sha1: String? = null,
         retry: Int = DEFAULT_RETRY,
         expectedSize: Long = -1L,
+        threads: Int = 4,
         onBytes: (Long) -> Unit = {}
     ) {
         require(urls.isNotEmpty()) { "At least one URL is required" }
@@ -172,7 +173,7 @@ object Fetcher {
                 continue
             }
             try {
-                if (ParallelDownloader.tryDownload(url, targetFile, sha1, expectedSize, onBytes)) {
+                if (ParallelDownloader.tryDownload(url, targetFile, sha1, expectedSize, threads, onBytes)) {
                     return
                 }
             } catch (e: CancellationException) {

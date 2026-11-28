@@ -150,4 +150,8 @@
     <string name="pe_transfer_hotspot_disconnect">Disconnect hotspot</string>
     <string name="pe_transfer_sender_heading">Sender</string>
     <string name="pe_transfer_contacting_sender">Connecting to the sender…</string>
+    <string name="pe_download_concurrency_title">Download</string>
+    <string name="pe_download_concurrency_caption">Concurrency for segmented large-file downloads</string>
+    <string name="pe_download_threads_title">Download threads</string>
+    <string name="pe_download_threads_summary">1 uses a single connection; 2–32 splits large files into parallel segments</string>
 </resources>

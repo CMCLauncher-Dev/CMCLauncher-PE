@@ -82,6 +82,8 @@ object AllSettings : SettingsRegistry() {
 
     val logBufferFlushInterval = intSetting("logBufferFlushInterval", 200, 100..1000)
 
+    val downloadThreads = intSetting("downloadThreads", 4, 1..32)
+
     val physicalMouseMode = boolSetting("physicalMouseMode", true)
 
     val physicalKeyImeCode = intSetting("physicalKeyImeCode", null)

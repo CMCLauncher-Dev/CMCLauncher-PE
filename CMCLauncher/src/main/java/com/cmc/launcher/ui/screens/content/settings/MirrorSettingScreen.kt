@@ -87,6 +87,7 @@ fun MirrorSettingScreen(
             verticalArrangement = Arrangement.spacedBy(Space.sm)
         ) {
             item { MirrorSection() }
+            item { DownloadSection() }
             item { PaletteSection() }
             item { BackgroundSection() }
             item { BlurSection() }
@@ -422,6 +423,29 @@ private fun BackgroundSection() {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DownloadSection() {
+    val threads = AllSettings.downloadThreads.state
+    CmcSection(
+        title = stringResource(R.string.pe_download_concurrency_title),
+        caption = stringResource(R.string.pe_download_concurrency_caption)
+    )
+    CmcPanel {
+        CmcSliderRow(
+            title = stringResource(R.string.pe_download_threads_title),
+            summary = stringResource(R.string.pe_download_threads_summary),
+            value = threads.toFloat(),
+            onValueChange = { AllSettings.downloadThreads.updateState(it.toInt()) },
+            valueRange = 1f..32f,
+            valueLabel = threads.toString(),
+            steps = 30,
+            onValueChangeFinished = {
+                AllSettings.downloadThreads.save(AllSettings.downloadThreads.state)
+            }
+        )
     }
 }
 

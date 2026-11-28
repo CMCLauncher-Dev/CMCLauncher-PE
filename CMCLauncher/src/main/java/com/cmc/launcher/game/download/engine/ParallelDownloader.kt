@@ -23,12 +23,13 @@ import java.util.concurrent.Semaphore
 internal object ParallelDownloader {
 
     private const val THRESHOLD_BYTES = 8L * 1024 * 1024
-    private const val SEGMENTS = 4
+    private const val MIN_THREADS = 1
+    private const val MAX_THREADS = 32
     private const val SEGMENT_RETRY = 2
     private const val TIMEOUT_MILLIS = 15_000
     private const val BUFFER_SIZE = 64 * 1024
     private const val MAX_REDIRECTS = 20
-    private const val MAX_PARALLEL_CONNECTIONS = 16
+    private const val MAX_PARALLEL_CONNECTIONS = 64
 
     private val slots = Semaphore(MAX_PARALLEL_CONNECTIONS, true)
 
@@ -41,8 +42,11 @@ internal object ParallelDownloader {
         targetFile: File,
         sha1: String?,
         expectedSize: Long,
+        threads: Int,
         onBytes: (Long) -> Unit
     ): Boolean {
+        if (threads < MIN_THREADS || threads > MAX_THREADS) return false
+        if (threads == 1) return false
         if (expectedSize in 1 until THRESHOLD_BYTES) return false
         val probe = probe(url) ?: return false
         if (probe.length < THRESHOLD_BYTES) return false
@@ -60,10 +64,10 @@ internal object ParallelDownloader {
             )
             channel = file
             coroutineScope {
-                (0 until SEGMENTS).map { index ->
+                (0 until threads).map { index ->
                     async(Dispatchers.IO) {
-                        val start = probe.length * index / SEGMENTS
-                        val end = probe.length * (index + 1) / SEGMENTS - 1
+                        val start = probe.length * index / threads
+                        val end = probe.length * (index + 1) / threads - 1
                         downloadSegment(url, probe, file, start, end, onBytes)
                     }
                 }.awaitAll()

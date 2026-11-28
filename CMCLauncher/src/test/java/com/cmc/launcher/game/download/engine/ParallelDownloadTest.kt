@@ -59,6 +59,42 @@ class ParallelDownloadTest {
         }
     }
 
+    @Test
+    fun singleThreadUsesOneConnection() {
+        runBlocking {
+            val base = start(true)
+            val target = Files.createTempFile("parallel-single", ".bin").toFile()
+            Fetcher.downloadFile(
+                urls = listOf(base + "/range"),
+                targetFile = target,
+                sha1 = sha1,
+                expectedSize = size.toLong(),
+                threads = 1
+            )
+            assertEquals(size.toLong(), target.length())
+            assertEquals(0, rangeRequests.get())
+            target.delete()
+        }
+    }
+
+    @Test
+    fun customThreadCountSplitsFile() {
+        runBlocking {
+            val base = start(true)
+            val target = Files.createTempFile("parallel-custom", ".bin").toFile()
+            Fetcher.downloadFile(
+                urls = listOf(base + "/range"),
+                targetFile = target,
+                sha1 = sha1,
+                expectedSize = size.toLong(),
+                threads = 6
+            )
+            assertEquals(size.toLong(), target.length())
+            assertTrue(rangeRequests.get() >= 6)
+            target.delete()
+        }
+    }
+
     private fun start(supportRanges: Boolean): String {
         val http = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
         http.createContext("/") { exchange ->

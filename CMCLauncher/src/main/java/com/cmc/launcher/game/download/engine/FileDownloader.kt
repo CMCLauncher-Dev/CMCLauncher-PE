@@ -1,5 +1,7 @@
 package com.cmc.launcher.game.download.engine
 
+import com.cmc.launcher.setting.AllSettings
+
 class FileDownloader(
     private val request: DownloadRequest,
     private val stats: DownloadStats
@@ -10,6 +12,7 @@ class FileDownloader(
             targetFile = request.targetFile,
             sha1 = request.sha1,
             expectedSize = request.expectedSize,
+            threads = AllSettings.downloadThreads.state,
             onBytes = stats::addBytes
         )
 

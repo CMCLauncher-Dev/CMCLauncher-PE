@@ -150,4 +150,8 @@
     <string name="pe_transfer_hotspot_disconnect">中斷熱點連線</string>
     <string name="pe_transfer_sender_heading">傳送裝置</string>
     <string name="pe_transfer_contacting_sender">正在連線至傳送裝置…</string>
+    <string name="pe_download_concurrency_title">下載</string>
+    <string name="pe_download_concurrency_caption">大檔案分段下載的並行數</string>
+    <string name="pe_download_threads_title">下載執行緒數</string>
+    <string name="pe_download_threads_summary">1 使用單一連線，2–32 將大檔案分段並行下載</string>
 </resources>
