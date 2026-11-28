@@ -1,0 +1,287 @@
+package com.cmc.launcher.ui.components
+
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
+import com.cmc.launcher.ui.theme.Alpha
+import com.cmc.launcher.ui.theme.FieldShape
+import com.cmc.launcher.ui.theme.Size
+import com.cmc.launcher.ui.theme.Space
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import com.cmc.launcher.R
+import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
+import com.cmc.launcher.ui.theme.itemColor
+import com.cmc.launcher.ui.theme.onItemColor
+import com.cmc.launcher.utils.animation.getAnimateTween
+
+@Composable
+fun ScalingLabel(
+    modifier: Modifier = Modifier,
+    text: String,
+    influencedByBackground: Boolean = true,
+    shape: Shape = MaterialTheme.shapes.extraLarge,
+    color: Color = itemColor(influencedByBackground),
+    contentColor: Color = onItemColor(),
+    blur: Int = AllSettings.backgroundBlur.state,
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = color,
+        contentColor = contentColor
+    ) {
+        Row(
+            modifier = Modifier
+                .backgroundGlass(blur, color, influencedByBackground)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            Text(text = text)
+        }
+    }
+}
+
+@Composable
+fun ScalingLabel(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit,
+    influencedByBackground: Boolean = true,
+    shape: Shape = MaterialTheme.shapes.extraLarge,
+    color: Color = itemColor(influencedByBackground = influencedByBackground),
+    contentColor: Color = onItemColor(),
+) {
+    ScalingLabel(
+        modifier = modifier,
+        onClick = onClick,
+        text = {
+            Text(text = text)
+        },
+        influencedByBackground = influencedByBackground,
+        shape = shape,
+        color = color,
+        contentColor = contentColor,
+    )
+}
+
+@Composable
+fun ScalingLabel(
+    modifier: Modifier = Modifier,
+    text: @Composable RowScope.() -> Unit,
+    onClick: () -> Unit,
+    influencedByBackground: Boolean = true,
+    shape: Shape = MaterialTheme.shapes.extraLarge,
+    color: Color = itemColor(influencedByBackground = influencedByBackground),
+    contentColor: Color = onItemColor(),
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = color,
+        contentColor = contentColor,
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            content = text,
+        )
+    }
+}
+
+@Composable
+fun LittleTextLabel(
+    modifier: Modifier = Modifier,
+    text: String,
+    singleLine: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.tertiary,
+    contentColor: Color = MaterialTheme.colorScheme.onTertiary,
+    shape: Shape = MaterialTheme.shapes.large,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
+) {
+    Surface(
+        modifier = modifier,
+        color = color,
+        contentColor = contentColor,
+        shape = shape
+    ) {
+        Text(
+            modifier = Modifier.padding(horizontal = Space.sm, vertical = Space.xs),
+            overflow = TextOverflow.Ellipsis,
+            text = text,
+            style = textStyle,
+            maxLines = if (singleLine) 1 else Int.MAX_VALUE
+        )
+    }
+}
+
+@Composable
+fun SimpleListItem(
+    modifier: Modifier = Modifier, selected: Boolean, itemName: String,
+    summary: (@Composable () -> Unit)? = null, enabled: Boolean = true, onClick: () -> Unit = {}
+) {
+    ChoiceRow(modifier, Modifier.selectable(selected = selected, enabled = enabled, role = Role.RadioButton,
+        interactionSource = null, indication = null, onClick = onClick), itemName, summary, enabled) {
+        RadioButton(selected = selected, onClick = null, enabled = enabled)
+    }
+}
+
+@Composable
+fun SimpleListItem(
+    modifier: Modifier = Modifier, checked: Boolean, onCheckedChange: (Boolean) -> Unit,
+    itemName: String, summary: (@Composable () -> Unit)? = null, enabled: Boolean = true
+) {
+    ChoiceRow(modifier, Modifier.toggleable(value = checked, enabled = enabled, role = Role.Checkbox,
+        interactionSource = null, indication = null, onValueChange = onCheckedChange), itemName, summary, enabled) {
+        Checkbox(checked = checked, onCheckedChange = null, enabled = enabled)
+    }
+}
+
+@Composable
+private fun ChoiceRow(
+    modifier: Modifier, action: Modifier, title: String, summary: (@Composable () -> Unit)?,
+    enabled: Boolean, indicator: @Composable () -> Unit
+) {
+    Row(modifier.fillMaxWidth().clip(FieldShape).then(action).heightIn(min = Size.touch)
+        .padding(horizontal = Space.md, vertical = Space.sm),
+        horizontalArrangement = Arrangement.spacedBy(Space.md), verticalAlignment = Alignment.CenterVertically) {
+        indicator()
+        Column(Modifier.weight(1f).alpha(if (enabled) 1f else Alpha.medium), verticalArrangement = Arrangement.spacedBy(Space.xxs)) {
+            Text(title, style = MaterialTheme.typography.bodyMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
+            summary?.invoke()
+        }
+    }
+}
+
+data class IDItem(val id: String, val title: String)
+
+@Composable
+fun SliderValueEditDialog(
+    onDismissRequest: () -> Unit,
+    title: String,
+    valueRange: ClosedFloatingPointRange<Float>,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit = {},
+    intCheck: Boolean = false
+) {
+    var inputValue by remember { mutableStateOf(value.let { if (intCheck) it.toInt() else it }.toString()) }
+    var errorText by remember { mutableStateOf("") }
+    val numberFormatError = stringResource(R.string.generic_input_failed_to_number)
+    val numberTooSmallError = stringResource(R.string.generic_input_too_small, valueRange.start.toInt())
+    val numberTooLargeError = stringResource(R.string.generic_input_too_large, valueRange.endInclusive.toInt())
+
+    SimpleEditDialog(
+        title = title,
+        value = inputValue,
+        onValueChange = { newInput ->
+            inputValue = newInput
+
+            val result = if (intCheck) inputValue.toIntOrNull()?.toFloat() else inputValue.toFloatOrNull()
+            errorText = when {
+                result == null -> numberFormatError
+                result < valueRange.start -> numberTooSmallError
+                result > valueRange.endInclusive -> numberTooLargeError
+                else -> ""
+            }
+        },
+        isError = errorText.isNotEmpty(),
+        supportingText = {
+            if (errorText.isNotEmpty()) Text(text = errorText)
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        onConfirm = {
+            if (errorText.isEmpty()) {
+                val newValue = inputValue.toFloatOrNull() ?: value
+                onValueChange(newValue)
+                onValueChangeFinished()
+                onDismissRequest()
+            }
+        },
+        onDismissRequest = onDismissRequest
+    )
+}
+
+@Composable
+fun TitleAndSummary(
+    modifier: Modifier = Modifier,
+    title: String,
+    summary: String? = null,
+    titleStyle: TextStyle = MaterialTheme.typography.titleSmall,
+    summaryStyle: TextStyle = MaterialTheme.typography.labelSmall
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = title,
+            style = titleStyle
+        )
+        summary?.let { text ->
+            Text(
+                modifier = Modifier.alpha(0.7f),
+                text = text,
+                style = summaryStyle
+            )
+        }
+    }
+}
+
+@Composable
+fun FocusableBox(
+    modifier: Modifier = Modifier,
+    requestKey: Any? = null,
+    canRequestFocus: () -> Boolean = { true }
+) {
+    val focusRequester = remember { FocusRequester() }
+    val currentCanRequestFocus by rememberUpdatedState(canRequestFocus)
+
+    Box(
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .focusable(enabled = true)
+    )
+
+    LaunchedEffect(requestKey) {
+        if (currentCanRequestFocus()) {
+            focusRequester.requestFocus()
+        }
+    }
+}

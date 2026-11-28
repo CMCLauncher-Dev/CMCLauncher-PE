@@ -1,0 +1,13 @@
+/CMCLauncher/libs/*.aar
+/CMCLauncher/libs/*.jar
+/CMCLauncher/src/main/jniLibs/**/*.so
+/CMCLauncher/src/main/assets/runtimes/**/*.so
+/CMCLauncher/src/main/assets/runtimes/**/*.tar.xz
+/CMCLauncher/src/main/assets/app_runtime/**/*.jar
+/CMCLauncher/src/main/assets/components/**/*.jar
+/CMCLauncher/src/main/assets/components/**/*.so
+/LWJGL/3.3.3/libs/**/*.jar
+/LWJGL/3.4.1/libs/**/*.jar
+/LWJGL/compileOnly/*.jar
+/Terracotta/src/main/jniLibs/**/*.so
+!/gradle/wrapper/gradle-wrapper.jar

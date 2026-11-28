@@ -1,0 +1,556 @@
+package com.cmc.launcher.ui.screens.content.elements
+
+import android.app.Activity
+import android.net.Uri
+import android.os.Build
+import android.os.Parcelable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.cmc.launcher.ui.components.StaticDialog as Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.crossfade
+import com.cmc.launcher.R
+import com.cmc.launcher.coroutine.TaskSystem
+import com.cmc.launcher.game.account.Account
+import com.cmc.launcher.game.account.AccountsManager
+import com.cmc.launcher.game.account.accountErrorText
+import com.cmc.launcher.game.account.auth_server.AuthServerHelper
+import com.cmc.launcher.game.account.isMicrosoftAccount
+import com.cmc.launcher.game.account.microsoftLogin
+import com.cmc.launcher.game.plugin.ApkPlugin
+import com.cmc.launcher.game.plugin.natives.NativePluginManager
+import com.cmc.launcher.game.plugin.renderer.RendererPluginManager
+import com.cmc.launcher.game.renderer.RendererInterface
+import com.cmc.launcher.game.renderer.Renderers
+import com.cmc.launcher.game.renderer.isSfpewConfiguredFor
+import com.cmc.launcher.game.version.installed.Version
+import com.cmc.launcher.game.version.installed.hasVulkanBackend
+import com.cmc.launcher.game.version.installed.utils.isBiggerVer
+import com.cmc.launcher.game.version.installed.utils.isLowerVer
+import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.setting.enums.BackgroundBlur
+import com.cmc.launcher.ui.AndroidStringText
+import com.cmc.launcher.ui.androidText
+import com.cmc.launcher.ui.components.ButtonPosition
+import com.cmc.launcher.ui.components.MarqueeText
+import com.cmc.launcher.ui.components.PositionButton
+import com.cmc.launcher.ui.components.PositionFilledTonalButton
+import com.cmc.launcher.ui.components.SimpleAlertDialog
+import com.cmc.launcher.ui.components.rememberDialogMaxHeight
+import com.cmc.launcher.ui.screens.content.FirstLoginMenu
+import com.cmc.launcher.ui.theme.cardColor
+import com.cmc.launcher.ui.theme.onCardColor
+import com.cmc.launcher.utils.canHandlePermission
+import com.cmc.launcher.utils.checkStoragePermissions
+import com.cmc.launcher.utils.file.InvalidFilenameException
+import com.cmc.launcher.utils.file.checkFilenameValidity
+import com.cmc.launcher.utils.hasStoragePermission
+import com.cmc.launcher.utils.image.isGifFile
+import com.cmc.launcher.viewmodel.BackgroundViewModel
+import com.cmc.launcher.viewmodel.ErrorViewModel
+import com.cmc.launcher.viewmodel.EventViewModel
+import com.cmc.launcher.viewmodel.LaunchGameViewModel
+import com.cmc.launcher.viewmodel.sendToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
+import java.io.File
+
+@Parcelize
+sealed interface QuickPlay : Parcelable {
+
+    @Parcelize
+    data class Save(val saveName: String): QuickPlay
+
+    @Parcelize
+    data class Server(val serverAddress: String): QuickPlay
+}
+
+sealed interface LaunchGameOperation {
+    data object None : LaunchGameOperation
+
+    data object NoVersion : LaunchGameOperation
+
+    data class InvalidVersionName(val th: InvalidFilenameException) : LaunchGameOperation
+
+    data object NoAccount : LaunchGameOperation
+
+    data class RendererNoStoragePermission(
+        val renderer: RendererInterface,
+        val version: Version,
+        val quickPlay: QuickPlay?
+    ) : LaunchGameOperation
+
+    data class UnsupportedRenderer(
+        val renderer: RendererInterface,
+        val version: Version,
+        val quickPlay: QuickPlay?
+    ): LaunchGameOperation
+
+    data class UnsupportedPlugins(
+        val plugins: List<ApkPlugin>,
+        val version: Version,
+        val quickPlay: QuickPlay?
+    ): LaunchGameOperation
+
+    data class TryLaunch(
+        val version: Version?,
+        val quickPlay: QuickPlay? = null
+    ) : LaunchGameOperation
+
+    data class AccountRelogin(
+        val account: Account,
+        val version: Version,
+        val quickPlay: QuickPlay?,
+        val logging: Boolean = false,
+        val error: Throwable? = null
+    ) : LaunchGameOperation
+
+    data class AccountRefreshFailed(
+        val account: Account,
+        val error: Throwable,
+        val version: Version,
+        val quickPlay: QuickPlay?
+    ) : LaunchGameOperation
+
+    data class RealLaunch(
+        val version: Version,
+        val quickPlay: QuickPlay?,
+        val skipAccountRefresh: Boolean = false
+    ) : LaunchGameOperation
+}
+
+@Composable
+fun LaunchGameOperation(
+    activity: Activity,
+    eventViewModel: EventViewModel,
+    launchGameViewModel: LaunchGameViewModel,
+    exitActivity: () -> Unit,
+    ensureVulkanSupported: suspend (Version) -> Boolean,
+    submitError: (ErrorViewModel.ThrowableMessage) -> Unit,
+    toAccountManageScreen: (FirstLoginMenu) -> Unit = {},
+    toVersionManageScreen: () -> Unit = {},
+    navigateToWeb: (String) -> Unit = {},
+    backToMain: () -> Unit = {},
+    checkIfInWebScreen: () -> Boolean = { false }
+) {
+    val launchGameOperation by launchGameViewModel.launchGameOperation.collectAsStateWithLifecycle()
+
+    when (val operation = launchGameOperation) {
+        is LaunchGameOperation.None -> {}
+        is LaunchGameOperation.NoVersion -> {
+            LaunchedEffect(Unit) {
+                eventViewModel.sendToast(androidText(R.string.game_launch_no_version))
+                toVersionManageScreen()
+                launchGameViewModel.updateOperation(LaunchGameOperation.None)
+            }
+        }
+        is LaunchGameOperation.InvalidVersionName -> {
+            val th = operation.th
+            SimpleAlertDialog(
+                title = stringResource(R.string.versions_manage_invalid),
+                text = th.getInvalidSummary(),
+                confirmText = stringResource(R.string.generic_cancel),
+                onDismiss = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                }
+            )
+        }
+        is LaunchGameOperation.NoAccount -> {
+            LaunchedEffect(Unit) {
+                eventViewModel.sendToast(androidText(R.string.game_launch_no_account))
+                toAccountManageScreen(FirstLoginMenu.NORMAL)
+                launchGameViewModel.updateOperation(LaunchGameOperation.None)
+            }
+        }
+        is LaunchGameOperation.RendererNoStoragePermission -> {
+            LaunchedEffect(Unit) {
+                val renderer = operation.renderer
+                val version = operation.version
+                val quickPlay = operation.quickPlay
+                withContext(Dispatchers.Main) {
+                    checkStoragePermissions(
+                        activity = activity,
+                        message = activity.getString(R.string.renderer_version_storage_permissions, renderer.getRendererName()),
+                        messageSdk30 = activity.getString(R.string.renderer_version_storage_permissions_sdk30, renderer.getRendererName()),
+                        onDialogCancel = {
+
+                            launchGameViewModel.updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
+                        }
+                    )
+                }
+                launchGameViewModel.updateOperation(LaunchGameOperation.None)
+            }
+        }
+        is LaunchGameOperation.UnsupportedRenderer -> {
+            val renderer = operation.renderer
+            val version = operation.version
+            val quickPlay = operation.quickPlay
+            SimpleAlertDialog(
+                title = stringResource(R.string.generic_warning),
+                text = stringResource(R.string.renderer_version_unsupported_warning, renderer.getRendererName()),
+                confirmText = stringResource(R.string.generic_anyway),
+                onConfirm = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
+                },
+                onDismiss = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                }
+            )
+        }
+        is LaunchGameOperation.UnsupportedPlugins -> {
+            val plugins = operation.plugins
+            val version = operation.version
+            val quickPlay = operation.quickPlay
+            SimpleAlertDialog(
+                title = stringResource(R.string.generic_warning),
+                text = stringResource(R.string.plugin_unsupported_warning, plugins.joinToString(", ") { it.appName }),
+                confirmText = stringResource(R.string.generic_anyway),
+                onConfirm = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
+                },
+                onDismiss = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                }
+            )
+        }
+        is LaunchGameOperation.TryLaunch -> {
+            LaunchedEffect(Unit) {
+                val version = operation.version
+                val versionInfo = version?.getVersionInfo()
+                if (version == null || versionInfo == null || !version.isValid()) {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.NoVersion)
+                    return@LaunchedEffect
+                }
+
+                try {
+                    checkFilenameValidity(version.getVersionName())
+                } catch (th: InvalidFilenameException) {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.InvalidVersionName(th))
+                    return@LaunchedEffect
+                }
+
+                val quickPlay = operation.quickPlay
+
+                AccountsManager.currentAccountFlow.value ?: run {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.NoAccount)
+                    return@LaunchedEffect
+                }
+
+                Renderers.setCurrentRenderer(version.getRenderer())
+                val currentRenderer = Renderers.getCurrentRenderer()
+
+                val mcVer = versionInfo.minecraftVersion
+
+                if (!version.hasVulkanBackend() || !ensureVulkanSupported(version)) {
+                    val supportedMin = currentRenderer.getMinMCVersion()?.let { verStr ->
+                        !isSfpewConfiguredFor(currentRenderer, version) && mcVer.isLowerVer(verStr)
+                    } ?: false
+                    val supportedMax = currentRenderer.getMaxMCVersion()?.let { verStr ->
+                        mcVer.isBiggerVer(verStr)
+                    } ?: false
+                    val isRendererUnsupported = supportedMin || supportedMax
+
+                    if (isRendererUnsupported) {
+                        launchGameViewModel.updateOperation(LaunchGameOperation.UnsupportedRenderer(currentRenderer, version, quickPlay))
+                        return@LaunchedEffect
+                    }
+                }
+
+                val unsupportedPlugins = NativePluginManager.getCheckedPlugins().filter { plugin ->
+                    (plugin.minMCVer?.let { mcVer.isLowerVer(it) } ?: false) ||
+                            (plugin.maxMCVer?.let { mcVer.isBiggerVer(it) } ?: false)
+                }
+                if (unsupportedPlugins.isNotEmpty()) {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.UnsupportedPlugins(unsupportedPlugins, version, quickPlay))
+                    return@LaunchedEffect
+                }
+
+                if (
+                    canHandlePermission &&  !hasStoragePermission &&
+                    RendererPluginManager.isConfigurablePlugin(version.getRenderer())
+                ) {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.RendererNoStoragePermission(currentRenderer, version, quickPlay))
+                    return@LaunchedEffect
+                }
+
+                launchGameViewModel.updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
+            }
+        }
+        is LaunchGameOperation.AccountRelogin -> {
+            if (operation.account.isMicrosoftAccount()) {
+                var selectLoginMethod by remember { mutableStateOf(false) }
+
+                val startReloginLogin: (useSystemBrowser: Boolean) -> Unit = { useSystemBrowser ->
+                    launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                    microsoftLogin(
+                        context = activity,
+                        useSystemBrowser = useSystemBrowser,
+                        toWeb = navigateToWeb,
+                        toSystemBrowser = { url ->
+                            eventViewModel.sendEvent(EventViewModel.Event.OpenLink(url))
+                        },
+                        backToMain = backToMain,
+                        checkIfInWebScreen = checkIfInWebScreen,
+                        updateOperation = {},
+                        showToast = { text, duration -> eventViewModel.sendToast(text, duration) },
+                        submitError = submitError
+                    ) {
+                        activity.runOnUiThread {
+                            launchGameViewModel.updateOperation(
+                                LaunchGameOperation.RealLaunch(
+                                    operation.version,
+                                    operation.quickPlay
+                                )
+                            )
+                        }
+                    }
+                }
+
+                if (selectLoginMethod) {
+                    MicrosoftLoginMethodDialog(
+                        onDismissRequest = {
+                            selectLoginMethod = false
+                        },
+                        onSystemBrowser = {
+                            startReloginLogin(true)
+                        },
+                        onInternalBrowser = {
+                            startReloginLogin(false)
+                        }
+                    )
+                } else {
+                    MicrosoftReloginDialog(
+                        onDismissRequest = {
+                            launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                        },
+                        onConfirm = {
+                            selectLoginMethod = true
+                        }
+                    )
+                }
+            } else {
+                OtherAccountReloginDialog(
+                    account = operation.account,
+                    logging = operation.logging,
+                    error = operation.error,
+                    onDismissRequest = {
+                        launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                    },
+                    onConfirm = { password ->
+                        launchGameViewModel.updateOperation(operation.copy(logging = true, error = null))
+                        AuthServerHelper(
+                            baseUrl = operation.account.otherBaseUrl!!,
+                            serverName = operation.account.accountType!!,
+                            email = operation.account.otherAccount!!,
+                            password = password,
+                            onSuccess = { acc, _ ->
+                                AccountsManager.markSessionValidated(acc)
+                                AccountsManager.suspendSaveAccount(acc)
+                                activity.runOnUiThread {
+                                    launchGameViewModel.updateOperation(
+                                        LaunchGameOperation.RealLaunch(
+                                            operation.version,
+                                            operation.quickPlay)
+                                    )
+                                }
+                            },
+                            onFailed = { th ->
+                                activity.runOnUiThread {
+                                    launchGameViewModel.updateOperation(
+                                        operation.copy(
+                                            logging = false,
+                                            error = th
+                                        ))
+                                }
+                            }
+                        ).let { helper ->
+                            TaskSystem.submitTask(helper.justLogin(activity, operation.account))
+                        }
+                    }
+                )
+            }
+        }
+        is LaunchGameOperation.AccountRefreshFailed -> {
+            val state = operation
+            AccountRefreshFailedDialog(
+                error = state.error,
+                onSkip = {
+                    launchGameViewModel.updateOperation(
+                        LaunchGameOperation.RealLaunch(
+                            state.version,
+                            state.quickPlay,
+                            skipAccountRefresh = true
+                        )
+                    )
+                },
+                onRetry = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.RealLaunch(state.version, state.quickPlay))
+                },
+                onCancel = {
+                    launchGameViewModel.updateOperation(LaunchGameOperation.None)
+                }
+            )
+        }
+        is LaunchGameOperation.RealLaunch -> {
+            LaunchedEffect(Unit) {
+                val version = operation.version
+                val quickPlay = operation.quickPlay
+                version.apply {
+                    offlineAccountLogin = false
+                    quickPlaySingle = quickPlay
+                }
+                launchGameViewModel.start(
+                    activity = activity,
+                    version = version,
+                    exitActivity = exitActivity,
+                    submitError = submitError,
+                    quickPlay = quickPlay,
+                    skipAccountRefresh = operation.skipAccountRefresh
+                )
+                launchGameViewModel.updateOperation(LaunchGameOperation.None)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccountRefreshFailedDialog(
+    error: Throwable,
+    onSkip: () -> Unit,
+    onRetry: () -> Unit,
+    onCancel: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onCancel
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .heightIn(max = rememberDialogMaxHeight())
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(all = 6.dp)
+                    .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
+                    .wrapContentHeight(),
+                shape = MaterialTheme.shapes.extraLarge,
+                color = cardColor(false),
+                contentColor = onCardColor(),
+                shadowElevation = 6.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.account_refresh_failed_title),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    Column(
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .verticalScroll(rememberScrollState())
+                            .fillMaxWidth()
+                    ) {
+                        AndroidStringText(
+                            text = accountErrorText(error),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = stringResource(R.string.account_refresh_failed_skip_message),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(16.dp))
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        PositionButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = ButtonPosition.Top,
+                            onClick = onRetry
+                        ) {
+                            MarqueeText(text = stringResource(R.string.account_refresh_failed_retry))
+                        }
+                        PositionFilledTonalButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = ButtonPosition.Middle,
+                            onClick = onSkip
+                        ) {
+                            MarqueeText(text = stringResource(R.string.account_refresh_failed_skip))
+                        }
+                        PositionFilledTonalButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = ButtonPosition.Bottom,
+                            onClick = onCancel
+                        ) {
+                            MarqueeText(text = stringResource(R.string.generic_cancel))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Background(
+    viewModel: BackgroundViewModel,
+    modifier: Modifier = Modifier,
+    allowVideo: Boolean = true
+) {
+    Box(modifier) {
+        if (viewModel.isValid && (viewModel.isImage || viewModel.isVideo && allowVideo)) {
+            com.cmc.launcher.ui.components.StaticBackground(
+                file = viewModel.backgroundFile,
+                video = viewModel.isVideo,
+                refresh = viewModel.refreshTrigger,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}

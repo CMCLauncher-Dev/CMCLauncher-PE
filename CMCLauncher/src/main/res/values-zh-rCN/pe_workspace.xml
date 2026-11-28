@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pe_settings_appearance">外观与下载</string>
+    <string name="pe_settings_appearance_detail">配色、背景、下载线路</string>
+    <string name="pe_settings_java_detail">已安装的 Java 运行时、JAR 文件</string>
+    <string name="pe_settings_launcher">启动器</string>
+    <string name="pe_settings_runtime">运行环境</string>
+    <string name="pe_account_active">当前账号</string>
+    <string name="pe_account_other">其他账号</string>
+    <string name="pe_account_saved">已保存的账号</string>
+    <string name="pe_account_auth_server">认证服务器</string>
+    <string name="pe_account_gate_title">需要先登录微软账号</string>
+    <string name="pe_account_gate_message">请先登录一个微软账号，再添加离线账号。</string>
+    <string name="pe_value_less">减小数值</string>
+    <string name="pe_value_more">增大数值</string>
+    <string name="pe_version_folders">文件夹</string>
+    <string name="pe_version_sections">版本工具</string>
+    <string name="pe_version_group_game">游戏</string>
+    <string name="pe_version_group_content">内容</string>
+    <string name="pe_version_group_network">网络</string>
+    <string name="pe_selected_count">已选 %1$d 项</string>
+    <string name="pe_layer_show">显示图层</string>
+    <string name="pe_layer_hide">隐藏图层</string>
+    <string name="pe_layer_reorder">调整图层顺序</string>
+    <string name="pe_color_original">原始颜色</string>
+    <string name="pe_color_current">当前颜色</string>
+    <string name="pe_server_choose_version">请先选择版本，再启用快捷启动。</string>
+    <string-array name="pe_joystick_areas">
+        <item>左上</item>
+        <item>上</item>
+        <item>右上</item>
+        <item>左</item>
+        <item>锁定</item>
+        <item>右</item>
+        <item>左下</item>
+        <item>下</item>
+        <item>右下</item>
+    </string-array>
+    <string name="pe_widget_position">位置</string>
+    <string name="pe_widget_dimensions">尺寸</string>
+    <string name="pe_align_left">左对齐</string>
+    <string name="pe_align_center">居中</string>
+    <string name="pe_align_right">右对齐</string>
+    <string name="pe_log_empty">日志为空。</string>
+    <string name="pe_log_failed">无法读取此日志。</string>
+    <string name="pe_log_tail">仅显示日志末尾，最多 8 MiB。</string>
+    <string name="pe_web_failed">网页加载失败。</string>
+    <string name="pe_web_invalid">请打开有效的 HTTP 或 HTTPS 地址。</string>
+    <string name="pe_export_format">格式</string>
+    <string name="pe_export_info">整合包信息</string>
+    <string name="pe_export_files">文件</string>
+    <string name="pe_export_folder_denied">所选目录未授予写入权限，请重新选择。</string>
+    <string name="pe_search_filters">筛选</string>
+    <string name="pe_search_empty">没有找到匹配内容，可以修改关键词或筛选条件后重试。</string>
+    <string name="pe_search_page">跳转页码</string>
+    <string name="pe_addon_versions">版本列表</string>
+    <string name="pe_addon_overview">项目介绍</string>
+    <string name="pe_image_failed">图片加载失败。</string>
+    <string name="pe_install_components">按需选择加载器，然后安装此版本。</string>
+    <string name="pe_install_auto_name">恢复自动版本名</string>
+    <string name="pe_java_runtimes">Java 运行环境</string>
+    <string name="pe_java_empty">没有找到 Java 运行环境，请导入 .tar.xz 运行库。</string>
+    <string name="pe_favorite_remove">取消收藏</string>
+    <string name="pe_home_cards">快捷卡片</string>
+    <string name="pe_home_cards_empty">在版本或服务器的菜单中选择“添加卡片到主界面”。</string>
+    <string name="pe_home_scanning">正在扫描版本…</string>
+    <string name="pe_home_choose_version">选择游戏版本</string>
+    <string name="pe_home_version_invalid">版本文件不可用</string>
+    <string name="pe_home_install">安装游戏版本</string>
+    <string name="pe_home_sign_in_launch">选择账号后启动</string>
+    <string name="pe_nav_home">主页</string>
+    <string name="pe_nav_versions">版本</string>
+    <string name="pe_nav_toolbox">工具箱</string>
+    <string name="pe_settings_migration">实例迁移</string>
+    <string name="pe_settings_migration_detail">从其他设备接收并迁移实例</string>
+</resources>

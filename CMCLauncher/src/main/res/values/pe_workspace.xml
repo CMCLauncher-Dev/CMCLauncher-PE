@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pe_settings_appearance">Appearance and downloads</string>
+    <string name="pe_settings_appearance_detail">Color palette, background, download source</string>
+    <string name="pe_settings_java_detail">Installed Java runtimes and JAR files</string>
+    <string name="pe_settings_launcher">Launcher</string>
+    <string name="pe_settings_runtime">Runtime</string>
+    <string name="pe_account_active">Current account</string>
+    <string name="pe_account_other">Other accounts</string>
+    <string name="pe_account_saved">Saved accounts</string>
+    <string name="pe_account_auth_server">Authentication server</string>
+    <string name="pe_account_gate_title">Microsoft sign-in required</string>
+    <string name="pe_account_gate_message">Sign in with a Microsoft account before adding an offline account.</string>
+    <string name="pe_value_less">Decrease value</string>
+    <string name="pe_value_more">Increase value</string>
+    <string name="pe_version_folders">Folders</string>
+    <string name="pe_version_sections">Version tools</string>
+    <string name="pe_version_group_game">Game</string>
+    <string name="pe_version_group_content">Content</string>
+    <string name="pe_version_group_network">Network</string>
+    <string name="pe_selected_count">Selected: %1$d</string>
+    <string name="pe_layer_show">Show layer</string>
+    <string name="pe_layer_hide">Hide layer</string>
+    <string name="pe_layer_reorder">Reorder layer</string>
+    <string name="pe_color_original">Original</string>
+    <string name="pe_color_current">Selected</string>
+    <string name="pe_server_choose_version">Select a version before enabling quick launch.</string>
+    <string-array name="pe_joystick_areas">
+        <item>Up left</item>
+        <item>Up</item>
+        <item>Up right</item>
+        <item>Left</item>
+        <item>Lock</item>
+        <item>Right</item>
+        <item>Down left</item>
+        <item>Down</item>
+        <item>Down right</item>
+    </string-array>
+    <string name="pe_widget_position">Position</string>
+    <string name="pe_widget_dimensions">Size</string>
+    <string name="pe_align_left">Left</string>
+    <string name="pe_align_center">Center</string>
+    <string name="pe_align_right">Right</string>
+    <string name="pe_log_empty">Log is empty.</string>
+    <string name="pe_log_failed">Could not read this log.</string>
+    <string name="pe_log_tail">Showing the end of this log (up to 8 MiB).</string>
+    <string name="pe_web_failed">Could not load the page.</string>
+    <string name="pe_web_invalid">Open a valid HTTP or HTTPS address.</string>
+    <string name="pe_export_format">Format</string>
+    <string name="pe_export_info">Pack details</string>
+    <string name="pe_export_files">Files</string>
+    <string name="pe_export_folder_denied">The selected folder does not grant write access. Choose another folder.</string>
+    <string name="pe_search_filters">Filters</string>
+    <string name="pe_search_empty">No matching content. Try changing the search or filters.</string>
+    <string name="pe_search_page">Go to page</string>
+    <string name="pe_addon_versions">Versions</string>
+    <string name="pe_addon_overview">Project overview</string>
+    <string name="pe_image_failed">Image could not be loaded.</string>
+    <string name="pe_install_components">Choose optional loaders, then install this version.</string>
+    <string name="pe_install_auto_name">Use automatic version name</string>
+    <string name="pe_java_runtimes">Java runtimes</string>
+    <string name="pe_java_empty">No Java runtimes found. Import a .tar.xz runtime to get started.</string>
+    <string name="pe_favorite_remove">Remove from favorites</string>
+    <string name="pe_home_cards">Quick cards</string>
+    <string name="pe_home_cards_empty">Choose “Add card to home screen” from a version or server menu.</string>
+    <string name="pe_home_scanning">Scanning versions…</string>
+    <string name="pe_home_choose_version">Select a version</string>
+    <string name="pe_home_version_invalid">Version files are unavailable</string>
+    <string name="pe_home_install">Install a game version</string>
+    <string name="pe_home_sign_in_launch">Select an account to play</string>
+    <string name="pe_nav_home">Home</string>
+    <string name="pe_nav_versions">Versions</string>
+    <string name="pe_nav_toolbox">Toolbox</string>
+    <string name="pe_mcmod_wiki" translatable="false">MC 百科</string>
+    <string name="pe_settings_migration">Instance transfer</string>
+    <string name="pe_settings_migration_detail">Receive an instance from another device</string>
+</resources>

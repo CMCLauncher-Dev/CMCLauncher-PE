@@ -1,0 +1,36 @@
+package com.cmc.launcher.ui.screens.content.settings.layouts
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun CmcAccentBar(
+    active: Boolean,
+    modifier: Modifier = Modifier,
+    accent: Color = MaterialTheme.colorScheme.primary
+) {
+    val color = if (active) accent else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f)
+
+    Box(
+        modifier = modifier
+            .width(4.dp)
+            .fillMaxHeight()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        color,
+                        color.copy(alpha = if (active) 0.45f else 0.22f)
+                    )
+                )
+            )
+    )
+}

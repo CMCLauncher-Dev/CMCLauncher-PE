@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pe_settings_appearance">外觀與下載</string>
+    <string name="pe_settings_appearance_detail">配色、背景、下載來源</string>
+    <string name="pe_settings_java_detail">已安裝的 Java 執行環境、JAR 檔案</string>
+    <string name="pe_settings_launcher">啟動器</string>
+    <string name="pe_settings_runtime">執行環境</string>
+    <string name="pe_account_active">目前帳號</string>
+    <string name="pe_account_other">其他帳號</string>
+    <string name="pe_account_saved">已儲存的帳號</string>
+    <string name="pe_account_auth_server">驗證伺服器</string>
+    <string name="pe_account_gate_title">需要先登入微軟帳號</string>
+    <string name="pe_account_gate_message">請先登入微軟帳號，再新增離線帳號。</string>
+    <string name="pe_value_less">減少數值</string>
+    <string name="pe_value_more">增加數值</string>
+    <string name="pe_version_folders">資料夾</string>
+    <string name="pe_version_sections">版本工具</string>
+    <string name="pe_version_group_game">遊戲</string>
+    <string name="pe_version_group_content">內容</string>
+    <string name="pe_version_group_network">網路</string>
+    <string name="pe_selected_count">已選 %1$d 項</string>
+    <string name="pe_layer_show">顯示圖層</string>
+    <string name="pe_layer_hide">隱藏圖層</string>
+    <string name="pe_layer_reorder">調整圖層順序</string>
+    <string name="pe_color_original">原始顏色</string>
+    <string name="pe_color_current">目前顏色</string>
+    <string name="pe_server_choose_version">請先選擇版本，再啟用快速啟動。</string>
+    <string-array name="pe_joystick_areas">
+        <item>左上</item>
+        <item>上</item>
+        <item>右上</item>
+        <item>左</item>
+        <item>鎖定</item>
+        <item>右</item>
+        <item>左下</item>
+        <item>下</item>
+        <item>右下</item>
+    </string-array>
+    <string name="pe_widget_position">位置</string>
+    <string name="pe_widget_dimensions">尺寸</string>
+    <string name="pe_align_left">靠左</string>
+    <string name="pe_align_center">置中</string>
+    <string name="pe_align_right">靠右</string>
+    <string name="pe_log_empty">記錄檔是空的。</string>
+    <string name="pe_log_failed">無法讀取此記錄檔。</string>
+    <string name="pe_log_tail">僅顯示記錄檔末尾，最多 8 MiB。</string>
+    <string name="pe_web_failed">網頁載入失敗。</string>
+    <string name="pe_web_invalid">請開啟有效的 HTTP 或 HTTPS 網址。</string>
+    <string name="pe_export_format">格式</string>
+    <string name="pe_export_info">整合包資訊</string>
+    <string name="pe_export_files">檔案</string>
+    <string name="pe_export_folder_denied">所選目錄未授予寫入權限，請重新選擇。</string>
+    <string name="pe_search_filters">篩選</string>
+    <string name="pe_search_empty">沒有找到符合條件的內容，可修改關鍵字或篩選條件後重試。</string>
+    <string name="pe_search_page">跳至頁碼</string>
+    <string name="pe_addon_versions">版本清單</string>
+    <string name="pe_addon_overview">專案介紹</string>
+    <string name="pe_image_failed">圖片載入失敗。</string>
+    <string name="pe_install_components">按需選擇載入器，然後安裝此版本。</string>
+    <string name="pe_install_auto_name">恢復自動版本名稱</string>
+    <string name="pe_java_runtimes">Java 執行環境</string>
+    <string name="pe_java_empty">沒有找到 Java 執行環境，請匯入 .tar.xz 執行庫。</string>
+    <string name="pe_favorite_remove">取消收藏</string>
+    <string name="pe_home_cards">快捷卡片</string>
+    <string name="pe_home_cards_empty">在版本或伺服器選單中選擇「新增卡片至主畫面」。</string>
+    <string name="pe_home_scanning">正在掃描版本…</string>
+    <string name="pe_home_choose_version">選擇遊戲版本</string>
+    <string name="pe_home_version_invalid">版本檔案無法使用</string>
+    <string name="pe_home_install">安裝遊戲版本</string>
+    <string name="pe_home_sign_in_launch">選擇帳號後啟動</string>
+    <string name="pe_nav_home">首頁</string>
+    <string name="pe_nav_versions">版本</string>
+    <string name="pe_nav_toolbox">工具箱</string>
+    <string name="pe_settings_migration">實例遷移</string>
+    <string name="pe_settings_migration_detail">從其他裝置接收並遷移實例</string>
+</resources>

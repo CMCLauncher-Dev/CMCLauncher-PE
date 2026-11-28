@@ -1,0 +1,138 @@
+name: Build CMCLauncher APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Cache vendored dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            CMCLauncher/libs
+            CMCLauncher/src/main/jniLibs
+            CMCLauncher/src/main/assets/runtimes
+            CMCLauncher/src/main/assets/app_runtime
+            CMCLauncher/src/main/assets/components
+            LWJGL/3.3.3/libs
+            LWJGL/3.4.1/libs
+            LWJGL/compileOnly
+            Terracotta/src/main/jniLibs
+          key: vendored-${{ hashFiles('gradle/vendored-deps.json') }}
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Cache Rust build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            PetLib/rust/target
+          key: petlib-rust-${{ runner.os }}-${{ hashFiles('PetLib/rust/Cargo.lock') }}
+          restore-keys: petlib-rust-${{ runner.os }}-
+
+      - name: Install cargo-ndk
+        run: |
+          version="4.1.2"
+          curl -sL "https://github.com/bbqsrc/cargo-ndk/releases/download/v${version}/cargo-ndk-x86_64-unknown-linux-gnu-v${version}.tgz" |
+            tar xz -C "$HOME/.cargo/bin" --strip-components=1
+          chmod +x "$HOME/.cargo/bin"/cargo-ndk*
+          cargo ndk --version
+
+      - name: Set up Android command-line tools
+        uses: android-actions/setup-android@v4
+        with:
+          log-accepted-android-sdk-licenses: false
+
+      - name: Install Android SDK and NDK
+        run: |
+          sdkmanager --install "platforms;android-37.0" "platforms;android-37.2" "build-tools;36.0.0" "ndk;25.2.9519653"
+          printf 'ANDROID_NDK_HOME=%s/ndk/25.2.9519653\n' "$ANDROID_HOME" >> "$GITHUB_ENV"
+
+      - name: Build arm64 Debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :CardGrid:testDebugUnitTest :CMCLauncher:testDebugUnitTest :CMCLauncher:assembleDebug -Darch=arm64 --stacktrace --no-daemon
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cardgrid-tests
+          path: |
+            CardGrid/build/reports/tests/
+            CardGrid/build/test-results/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Upload raw APK
+        uses: actions/upload-artifact@v7
+        with:
+          path: CMCLauncher/build/outputs/apk/debug/*.apk
+          archive: false
+          retention-days: 10
+          if-no-files-found: error
+      - name: Release APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          fail_on_unmatched_files: true
+          name: CMCLauncher latest
+          files: CMCLauncher/build/outputs/apk/debug/*.apk
+
+      - name: Upload APK to RainS3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: rainyun
+          AWS_MAX_ATTEMPTS: "8"
+          AWS_RETRY_MODE: adaptive
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          S3_ENDPOINT: https://cn-nb1.rains3.com
+          S3_BUCKET: ctiso
+        run: |
+          if [[ -z "$AWS_ACCESS_KEY_ID" || -z "$AWS_SECRET_ACCESS_KEY" ]]; then
+            echo "S3 secrets not configured, skipping upload."
+            exit 0
+          fi
+          shopt -s nullglob
+          apks=(CMCLauncher/build/outputs/apk/debug/*.apk)
+          if (( ${#apks[@]} != 1 )); then
+            echo "::error::Expected one ARM64 Debug APK, found ${#apks[@]}."
+            exit 1
+          fi
+          # Keep each request small and serialize parts for RainS3 write throttling.
+          export AWS_CONFIG_FILE="$RUNNER_TEMP/cmcl-rains3-config"
+          aws configure set default.s3.preferred_transfer_client classic
+          aws configure set default.s3.multipart_threshold 8MB
+          aws configure set default.s3.multipart_chunksize 8MB
+          aws configure set default.s3.max_concurrent_requests 1
+          aws configure set default.s3.max_bandwidth 1MB/s
+          aws s3 cp "${apks[0]}" "s3://$S3_BUCKET/CMCL Release/${apks[0]##*/}" \
+            --endpoint-url "$S3_ENDPOINT" \
+            --content-type application/vnd.android.package-archive \
+            --no-progress \
+            --no-cli-pager

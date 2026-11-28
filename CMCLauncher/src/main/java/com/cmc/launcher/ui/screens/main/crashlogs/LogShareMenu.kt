@@ -1,0 +1,127 @@
+package com.cmc.launcher.ui.screens.main.crashlogs
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.cmc.launcher.ui.components.StaticDialog as Dialog
+import com.cmc.launcher.R
+import com.cmc.launcher.ui.theme.cardColor
+import com.cmc.launcher.ui.theme.onCardColor
+
+sealed interface LogShareMenuOperation {
+    data object None : LogShareMenuOperation
+
+    data object ShowMenu : LogShareMenuOperation
+}
+
+@Composable
+fun LogShareMenu(
+    operation: LogShareMenuOperation,
+    onChange: (LogShareMenuOperation) -> Unit,
+    onView: () -> Unit,
+    onShare: () -> Unit,
+    canUpload: Boolean,
+    onUpload: () -> Unit
+) {
+    when (operation) {
+        is LogShareMenuOperation.None -> {}
+        is LogShareMenuOperation.ShowMenu -> {
+            Dialog(
+                onDismissRequest = {
+                    onChange(LogShareMenuOperation.None)
+                }
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 6.dp),
+                    color = cardColor(false),
+                    contentColor = onCardColor(),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    shadowElevation = 6.dp
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onView()
+                                onChange(LogShareMenuOperation.None)
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_assignment_filled),
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.generic_view))
+                        }
+
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onShare()
+                                onChange(LogShareMenuOperation.None)
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_share_filled),
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.crash_share_logs))
+                        }
+
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = canUpload,
+                            onClick = {
+                                onUpload()
+                                onChange(LogShareMenuOperation.None)
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_link),
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.crash_link_share_button))
+                        }
+
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onChange(LogShareMenuOperation.None)
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_close),
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.generic_close))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,1037 @@
+{
+  "release": "deps-v1",
+  "files": [
+    {
+      "path": "CMCLauncher/libs/MobileGlues-release.aar",
+      "size": 8521952,
+      "sha256": "6ca24a8afd5312b4337f42e5d0922982c7462c827b171176c772179be961661e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6ca24a8afd53-MobileGlues-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/NG-GL4ES-release.aar",
+      "size": 9272139,
+      "sha256": "de38c0d5e45fda8d1a4f4ececd357ade0e7b821465aa8ef0e233b964e8a53924",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/de38c0d5e45f-NG-GL4ES-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/SDL-release.aar",
+      "size": 4064412,
+      "sha256": "5527d2e59e76b7a58eef0d54bb8ae0ca153593a9dfc0ed73ac84fb829520298b",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5527d2e59e76-SDL-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/SimpleFPEWrapper-release.aar",
+      "size": 8558630,
+      "sha256": "2b6e7d24e91786aeda82f219f1c9a2df45f6811eddc86cc568d1011f581454a8",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/2b6e7d24e917-SimpleFPEWrapper-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/kopper-zink-release.aar",
+      "size": 16002238,
+      "sha256": "bf816fc9dc2047edff0284369b6433260ec462b7b26a3e3b544550c721ca26fe",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/bf816fc9dc20-kopper-zink-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/lwjgl-3.3.3-natives-release.aar",
+      "size": 16269860,
+      "sha256": "ec26f2008e5c4b73605d5f401e8f3df8f4e0eb74d2e66fbba7d349a1f530552f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/ec26f2008e5c-lwjgl-3.3.3-natives-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/lwjgl-3.4.1-natives-release.aar",
+      "size": 16567974,
+      "sha256": "6324e76c4fcc26712053f86a2e1a6b75f112b3a69c10053d7673c40d33c741c5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6324e76c4fcc-lwjgl-3.4.1-natives-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/openal-soft-release.aar",
+      "size": 3620056,
+      "sha256": "424947ee10e26b76a3aff6769e6a74fa4fb11b556183997b270f8278e7d3532c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/424947ee10e2-openal-soft-release.aar"
+    },
+    {
+      "path": "CMCLauncher/libs/opennbt-1.6-sources.jar",
+      "size": 39626,
+      "sha256": "fe8b31e56a61aca14fd3433761dcdc1502fd2099718794131f4ec71f3d85d10f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/fe8b31e56a61-opennbt-1.6-sources.jar"
+    },
+    {
+      "path": "CMCLauncher/libs/opennbt-1.6.jar",
+      "size": 69064,
+      "sha256": "8cc83bec92318e83d206285b2c416d6c43558e67e7be07ac4535f979a3be9e8e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/8cc83bec9231-opennbt-1.6.jar"
+    },
+    {
+      "path": "CMCLauncher/libs/spirv-cross-natives.aar",
+      "size": 31824343,
+      "sha256": "7d3614880b8ae3019a21706045743af692d05711394f9cdaea58437bf07eeaee",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7d3614880b8a-spirv-cross-natives.aar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-3.3.3-merged-modules.jar",
+      "size": 1128560,
+      "sha256": "c6a79409270f14b6faf6ce8f95396f080603bd2e38539e4c999de761ca118ba4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/c6a79409270f-lwjgl-3.3.3-merged-modules.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-freetype.jar",
+      "size": 451815,
+      "sha256": "5c4e2ff87fa4faf5c55d9922fffec62faf449ad2733000951ab9c17da0d3adf8",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5c4e2ff87fa4-lwjgl-freetype.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-lwjglx.jar",
+      "size": 237333,
+      "sha256": "7346cb92ce8668c314dd4d751057fc3b4fbc4c3111973cbc3e8ec50166b111c9",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7346cb92ce86-lwjgl-lwjglx.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-nanovg.jar",
+      "size": 126928,
+      "sha256": "a76270407fe11569eb83cb3e644d05efed7a5595e0a7cd0a2743d46ba83177e4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a76270407fe1-lwjgl-nanovg.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-openal.jar",
+      "size": 109538,
+      "sha256": "5cba886d84d7fe79c411c2711fcec24ac06419b6838d442cfd6c6758803db584",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5cba886d84d7-lwjgl-openal.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-shaderc.jar",
+      "size": 24400,
+      "sha256": "d2fb00df0697c5fa85b0c877a2bbe61f99d2d1caf245a035188f01f9f84b5c60",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d2fb00df0697-lwjgl-shaderc.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-spvc.jar",
+      "size": 127690,
+      "sha256": "e5e5ded01b5fe2f8c1fcf189ea4242ffd23416de268b85337d134e86644a4224",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e5e5ded01b5f-lwjgl-spvc.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-stb.jar",
+      "size": 115903,
+      "sha256": "7da67c67d9674daf94248d857f15b82fa07bb9d91b006ede7eb9447de6af78be",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7da67c67d967-lwjgl-stb.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-tinyfd.jar",
+      "size": 7711,
+      "sha256": "a8a07d746a9f5bc16ba3102a5665c47c315f9846c404e7259f6b76bea4492aed",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a8a07d746a9f-lwjgl-tinyfd.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-vma.jar",
+      "size": 98286,
+      "sha256": "0d97d3dd96031873630f5c200c986dcc7aeff7654f8d524884689e74d1522018",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0d97d3dd9603-lwjgl-vma.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl-vulkan.jar",
+      "size": 6106103,
+      "sha256": "e10c2122de8fdfb5e9e35de8c59112b8104bc446554402c1f24743d976d1f96d",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e10c2122de8f-lwjgl-vulkan.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.3.3/lwjgl.jar",
+      "size": 793777,
+      "sha256": "4210729d04c0f0218c053fffd2a95845937135484f6b4cb0ae25a6eceb4e83a3",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/4210729d04c0-lwjgl.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-3.4.1-merged-modules.jar",
+      "size": 2097445,
+      "sha256": "4aea16f6368c7d7db56f65c8f8e5127e68cf0efeff7629504349e9040f6f283f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/4aea16f6368c-lwjgl-3.4.1-merged-modules.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-freetype.jar",
+      "size": 465796,
+      "sha256": "0e1b952378e75f32024165067024f75ef608b0a9e9e578a4c7ba8d17e8446064",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0e1b952378e7-lwjgl-freetype.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-lwjglx.jar",
+      "size": 237121,
+      "sha256": "95d791acd7203adc8aad12d2cef75ebe0004a1ee93d6232d7eb5322f2b985581",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/95d791acd720-lwjgl-lwjglx.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-nanovg.jar",
+      "size": 76348,
+      "sha256": "68b1bb6ada2e55e6ce09c1602e5b1dbdc6d20d2e2c17dc2124220b238eea6fb4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/68b1bb6ada2e-lwjgl-nanovg.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-openal.jar",
+      "size": 150981,
+      "sha256": "1d25e0dbee386de0c6c52d0e57de72065a4f618491222a2d9c543dd228c54059",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1d25e0dbee38-lwjgl-openal.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-shaderc.jar",
+      "size": 147618,
+      "sha256": "9cf95af1fdaecb318577afbc2b661aa1c754d9d054b3431803d6b73ce4a12f64",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9cf95af1fdae-lwjgl-shaderc.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-spng.jar",
+      "size": 114650,
+      "sha256": "a6e029c4e0786c7b39fe52d1c303b920a679e04b0865bed9f830c8e950d62487",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a6e029c4e078-lwjgl-spng.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-spvc.jar",
+      "size": 141553,
+      "sha256": "961a23d428886e1dbefeb7d958b39180bbaee657ce2669d51d09cd4033d5ec6a",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/961a23d42888-lwjgl-spvc.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-stb.jar",
+      "size": 136953,
+      "sha256": "d9b3ed4eafb540a0b34b6cb7834252682293e5b4c18d614908817002268dcec4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d9b3ed4eafb5-lwjgl-stb.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-tinyfd.jar",
+      "size": 7677,
+      "sha256": "e216a96aa59fce6b1d51df997c52a2fd9b44a05349f958ad4a4d090e758f733e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e216a96aa59f-lwjgl-tinyfd.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-vma.jar",
+      "size": 103366,
+      "sha256": "1f850ed50109b7617f133a2ceb41ababf7af3d8ebad00a6e4dcf1927f55fe965",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1f850ed50109-lwjgl-vma.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl-vulkan.jar",
+      "size": 8540747,
+      "sha256": "a3d7bc99d40b3329e1248aa19fa6180cc88bdf29175fcae1b0b45eeb7441f165",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a3d7bc99d40b-lwjgl-vulkan.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/app_runtime/lwjgl/3.4.1/lwjgl.jar",
+      "size": 1169477,
+      "sha256": "63cccf4c59f6e8e6e6d537d28dea94e7471b0e41949108ba12917dc2d9ff2ecb",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/63cccf4c59f6-lwjgl.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/auth_libs/authlib-injector.jar",
+      "size": 349681,
+      "sha256": "9c7f4343e6c82034958ffb48c14a2cb0c85928be7283103ce17da00c6d5a7b10",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9c7f4343e6c8-authlib-injector.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/auth_libs/nide8auth.jar",
+      "size": 183804,
+      "sha256": "4ebfebc5b35acc489cef5ca4dc62659f58b94d01b5c2c14a41aef898a4b28dc4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/4ebfebc5b35a-nide8auth.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo/ResConfHack.jar",
+      "size": 12329,
+      "sha256": "9b9e0df90d3555dfbe12b01f5fe0ec4f68ae116a35bc1d0c5a1ba327dd6e2d26",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9b9e0df90d35-ResConfHack.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo/cacio-androidnw-1.10-SNAPSHOT.jar",
+      "size": 45072,
+      "sha256": "6d7ff7a7c80f4a4412e8a5dea5ae6bf218985dab56b4ac61f32e39579de28633",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6d7ff7a7c80f-cacio-androidnw-1.10-SNAPSHOT.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo/cacio-shared-1.10-SNAPSHOT.jar",
+      "size": 102755,
+      "sha256": "13c8021c04d471ba4a37c9d6e02594abccbb8aae0db2d0fa656a9204c90ecdbf",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/13c8021c04d4-cacio-shared-1.10-SNAPSHOT.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo17/cacio-agent.jar",
+      "size": 5480,
+      "sha256": "f3251054e9da6f999c9174ce095b28222bb12fbdcb4575194d460d97e96a15f7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/f3251054e9da-cacio-agent.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo17/cacio-shared-1.19.1-SNAPSHOT.jar",
+      "size": 106230,
+      "sha256": "ed91fb172c92e19a9f12be73f3d8127223a7139b06278ddacfcae2b410b35b9a",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/ed91fb172c92-cacio-shared-1.19.1-SNAPSHOT.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/caciocavallo17/cacio-tta-1.19.1-SNAPSHOT.jar",
+      "size": 52825,
+      "sha256": "d81c524fca7656748d406c5a478039b10513ac5a666ff4759b2a9238a984a16d",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d81c524fca76-cacio-tta-1.19.1-SNAPSHOT.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/launcher/HMCLTransformerDiscoveryService-1.0.jar",
+      "size": 2243,
+      "sha256": "ea5756fec2e06d5aa5824b54f9c26ae46a7ab43ca9a57e747f1f63e1269f7dad",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/ea5756fec2e0-HMCLTransformerDiscoveryService-1.0.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/launcher/MioLaunchWrapper.jar",
+      "size": 2103,
+      "sha256": "2e1ac0888fb31535e472dad3737fc3d143e27d1cdc282f136cac27cd10823201",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/2e1ac0888fb3-MioLaunchWrapper.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/launcher/MioLibPatcher.jar",
+      "size": 816423,
+      "sha256": "80445f93b45d6f271205964528fd631f53d1c9b94971909eca1b4ac63ab63539",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/80445f93b45d-MioLibPatcher.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/components/launcher/forge_installer.jar",
+      "size": 3222,
+      "sha256": "7e37ac73caea277d22ba16032bc91a9f2fa1974b0739824a5f8e71b8393a6745",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7e37ac73caea-forge_installer.jar"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.13.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 168176,
+      "sha256": "95fd6129757ceae73472b014c0c7e23a27a193adc4c355693706998aa4757be8",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/95fd6129757c-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.13.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 122296,
+      "sha256": "e262e528436960b51259a62d2a44deb914d00804b25a0a295c089b739ffe8445",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e262e5284369-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.13.0/natives/x86/libjnidispatch.so",
+      "size": 120184,
+      "sha256": "1ff39ffce0dfc1ccc2f10a08777ece9096ae73276853a46ef307d48a78173de5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1ff39ffce0df-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.13.0/natives/x86_64/libjnidispatch.so",
+      "size": 118584,
+      "sha256": "081d3f045743b818d4d3f1868b8655f34760828ead6e2b712659d5bceadafe04",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/081d3f045743-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.14.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 168176,
+      "sha256": "3730ce014f7a6807ae74af78c3b9f5a3cba1f5886316b3d3858493df923efe96",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3730ce014f7a-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.14.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 122296,
+      "sha256": "73334a01c209297c131cb746d166128f702b44760c9429c0d91d1e8dfdeaa570",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/73334a01c209-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.14.0/natives/x86/libjnidispatch.so",
+      "size": 120184,
+      "sha256": "06c0d445fc1a216f9735d3e23de2b95682db055824928c4554c9728919092729",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/06c0d445fc1a-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.14.0/natives/x86_64/libjnidispatch.so",
+      "size": 118584,
+      "sha256": "a6d3997d3cfc0dba1b00fd2943b41e7395741e88336ed6f6237b594c94083eea",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a6d3997d3cfc-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.15.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 168280,
+      "sha256": "1daf1544f2718b2dd694fc94b7418fd201181450e211c4d15fa532626a488c78",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1daf1544f271-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.15.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 122372,
+      "sha256": "d78041fc17d9e753745250adbcd389dead36bb7ba3a31e07fab75e50733164d5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d78041fc17d9-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.15.0/natives/x86/libjnidispatch.so",
+      "size": 120256,
+      "sha256": "e125106fe437446b1c73b61e5b45c2470456d53e32fe85223c9e256080de0bc2",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e125106fe437-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.15.0/natives/x86_64/libjnidispatch.so",
+      "size": 118688,
+      "sha256": "b48aac1286fe1874512f500eb74b04c62b0afaf5281422deac866a01257a1a03",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b48aac1286fe-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.16.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 168328,
+      "sha256": "7e9c0158491077e5b9f249d81e30ed873bd7dd711cbb5c06b98c291402498b76",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7e9c01584910-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.16.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 126496,
+      "sha256": "c8084b447a3a293a728bce1e4085e5a70677968393facf7dada84fd7a9ef3b3c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/c8084b447a3a-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.16.0/natives/x86/libjnidispatch.so",
+      "size": 124380,
+      "sha256": "922ed74b9d0ee2f3f7de2257c88af60f3aabfce99e062f8cd6c0e9d06abd5f54",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/922ed74b9d0e-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.16.0/natives/x86_64/libjnidispatch.so",
+      "size": 126912,
+      "sha256": "7a96d32a39efc37ebca2f16441bbbb8c5cb46cdded90b02259d2016feb542537",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7a96d32a39ef-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.17.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 176520,
+      "sha256": "abc26e994517bcaa3309acdb0a27373864086c7569c89d3087b8626fada9ef06",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/abc26e994517-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.17.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 126496,
+      "sha256": "9652282ef31834281229370a354d56c1522fe36e93625169df99b3e346f76092",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9652282ef318-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.17.0/natives/x86/libjnidispatch.so",
+      "size": 124380,
+      "sha256": "d10fcc75029621a88fa6020807e7ba82ff434a01ead396cf0e36c50e6c393118",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d10fcc750296-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.17.0/natives/x86_64/libjnidispatch.so",
+      "size": 126912,
+      "sha256": "3809247e9b804a05ed8377b87d545cf5b5e97f960f75e725bc8497b40260e417",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3809247e9b80-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.18.0/natives/arm64-v8a/libjnidispatch.so",
+      "size": 176520,
+      "sha256": "abc26e994517bcaa3309acdb0a27373864086c7569c89d3087b8626fada9ef06",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/abc26e994517-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.18.0/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 126496,
+      "sha256": "9652282ef31834281229370a354d56c1522fe36e93625169df99b3e346f76092",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9652282ef318-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.18.0/natives/x86/libjnidispatch.so",
+      "size": 124380,
+      "sha256": "d10fcc75029621a88fa6020807e7ba82ff434a01ead396cf0e36c50e6c393118",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d10fcc750296-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.18.0/natives/x86_64/libjnidispatch.so",
+      "size": 126912,
+      "sha256": "3809247e9b804a05ed8377b87d545cf5b5e97f960f75e725bc8497b40260e417",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3809247e9b80-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.19.1/natives/arm64-v8a/libjnidispatch.so",
+      "size": 176520,
+      "sha256": "abc26e994517bcaa3309acdb0a27373864086c7569c89d3087b8626fada9ef06",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/abc26e994517-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.19.1/natives/armeabi-v7a/libjnidispatch.so",
+      "size": 126496,
+      "sha256": "9652282ef31834281229370a354d56c1522fe36e93625169df99b3e346f76092",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9652282ef318-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.19.1/natives/x86/libjnidispatch.so",
+      "size": 124380,
+      "sha256": "d10fcc75029621a88fa6020807e7ba82ff434a01ead396cf0e36c50e6c393118",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d10fcc750296-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jna/5.19.1/natives/x86_64/libjnidispatch.so",
+      "size": 126912,
+      "sha256": "3809247e9b804a05ed8377b87d545cf5b5e97f960f75e725bc8497b40260e417",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3809247e9b80-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-17/bin-arm.tar.xz",
+      "size": 5558048,
+      "sha256": "c50ae258586a6fb286ba45f311b8b5a5ed4a51aae7f7325d114945c7ad3c2e38",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/c50ae258586a-bin-arm.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-17/bin-arm64.tar.xz",
+      "size": 4640448,
+      "sha256": "67f4510b0fa9c64ed851f4af924a5a8898538ada453f66d64542b72a0f04f92d",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/67f4510b0fa9-bin-arm64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-17/bin-x86.tar.xz",
+      "size": 4986636,
+      "sha256": "6eacf05adbc9b5d59ad7a72170a0fccd781b38a364aec39815049cb4ecd29212",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6eacf05adbc9-bin-x86.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-17/bin-x86_64.tar.xz",
+      "size": 6088424,
+      "sha256": "725587381bf043c66bb0f494abca4d4c5b1f67ff791ad0370e8252bd9257c7e6",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/725587381bf0-bin-x86_64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-17/universal.tar.xz",
+      "size": 17070632,
+      "sha256": "d14ffda3b15b93a7000de26be864dd81b15f7eae8dbebe5ee71074973492a73b",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d14ffda3b15b-universal.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-21/bin-arm.tar.xz",
+      "size": 5710624,
+      "sha256": "c782b17aabaa2be510144c464b5aa4784f984d2a07cfc4c3cd13a86ee399798e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/c782b17aabaa-bin-arm.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-21/bin-arm64.tar.xz",
+      "size": 6847128,
+      "sha256": "9889de6d0526e0c9708ea18c6e7e41a7c3d5ae366a02524ae3a392274d3462b5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9889de6d0526-bin-arm64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-21/bin-x86.tar.xz",
+      "size": 6892112,
+      "sha256": "12d3784ac1525c32b423559557dad380639d5c1433196cc9917a7f682a7eb7e0",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/12d3784ac152-bin-x86.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-21/bin-x86_64.tar.xz",
+      "size": 7847856,
+      "sha256": "1e1ccc34dd24f56efd2440aa80e658df5ac6efa2e3d866d8be0345d31284bef6",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1e1ccc34dd24-bin-x86_64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-21/universal.tar.xz",
+      "size": 18974588,
+      "sha256": "57bd118b3696d572257c5f4be1762379eb6a81361a17da1c4b0b9f7131dd6d7c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/57bd118b3696-universal.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-25/bin-arm.tar.xz",
+      "size": 4216116,
+      "sha256": "b7ee2a249bc81b6c2422f3763687e642df02b5abac6cb6f2f58888ef1c7f8e0f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b7ee2a249bc8-bin-arm.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-25/bin-arm64.tar.xz",
+      "size": 5453168,
+      "sha256": "16f09d1d163c008ae556be68c624057c4791c21ae6d31302334e61d75439567b",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/16f09d1d163c-bin-arm64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-25/bin-x86_64.tar.xz",
+      "size": 6519636,
+      "sha256": "449fe8d37f2ed407322b8ba48cdb06daa5947b28bcf56225afea3d7cc2ccaecb",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/449fe8d37f2e-bin-x86_64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-25/universal.tar.xz",
+      "size": 32814644,
+      "sha256": "23141bf4e0ed46ff0b751c6cc32b3863d39e6a37b720f3d86a4fe9318aeb8e9f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/23141bf4e0ed-universal.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-8/bin-arm.tar.xz",
+      "size": 3375000,
+      "sha256": "dc9f0a1beb4d233dc32113955f452ac487d905b3611932ef287c5444c4711748",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/dc9f0a1beb4d-bin-arm.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-8/bin-arm64.tar.xz",
+      "size": 4347796,
+      "sha256": "deed9083a1047af1afaf2d7f1a2de4ae39fadf62c52881f075793e80274956cf",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/deed9083a104-bin-arm64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-8/bin-x86.tar.xz",
+      "size": 3893576,
+      "sha256": "bf25b4be95c99ea9b9b2ca5cf961dc52ba3196914bb3cc3b1d07b10d2876ca06",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/bf25b4be95c9-bin-x86.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-8/bin-x86_64.tar.xz",
+      "size": 6182832,
+      "sha256": "37c3f7214ce3086575d7210baa25aee130d8db28c57739f598d24dfbfff32612",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/37c3f7214ce3-bin-x86_64.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/assets/runtimes/jre-8/universal.tar.xz",
+      "size": 9540292,
+      "sha256": "150072cfa1d9e037c31e4bf9770aa5470ae46d0bfefd366b7ce5b2f940ede3f3",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/150072cfa1d9-universal.tar.xz"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libEGL_angle.so",
+      "size": 297352,
+      "sha256": "a34c326b3702bf1d32e9081a6cb2b1e01514b85336f8c3f34bc9a73ee203de51",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a34c326b3702-libEGL_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libGLESv2_angle.so",
+      "size": 5717200,
+      "sha256": "0e0d9347086282008752b9bca0f87a8bb912b22129b6374c1a14a8aaf6fad28c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0e0d93470862-libGLESv2_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libOSMesa_2121.so",
+      "size": 18927952,
+      "sha256": "3e37c4b73d597269171a99236fad898f855376164ba9dca2d72c8088f5e713eb",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3e37c4b73d59-libOSMesa_2121.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libOSMesa_2300d.so",
+      "size": 15764640,
+      "sha256": "738ad12674a362635a50e7f8cb319557d4f31e80f99259ad75e2a0d67451a5b7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/738ad12674a3-libOSMesa_2300d.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libOSMesa_8.so",
+      "size": 15221856,
+      "sha256": "4038d4c8d04a0aa41fb8683286010eeddd2fd0b892926c4e09806e0f971373c1",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/4038d4c8d04a-libOSMesa_8.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libVkLayer_khronos_timeline_semaphore.so",
+      "size": 214936,
+      "sha256": "f7915aed00c77c1e8ea5ee9dbd3410d0fa3cf35e91577716b16ea55873cb1c81",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/f7915aed00c7-libVkLayer_khronos_timeline_semaphore.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libgl4es_114.so",
+      "size": 2649480,
+      "sha256": "3dbcc87baae1436f2affb923eda053d7e256f0aa032654452e2b2092566f6b24",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3dbcc87baae1-libgl4es_114.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libjnidispatch.so",
+      "size": 168176,
+      "sha256": "e45dace4eac5be088b1d1078374fa192459c0815cd89b21609ba680739b209fd",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e45dace4eac5-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libshaderconv.so",
+      "size": 8017720,
+      "sha256": "2eae560ca3ac966c693968a94a2d9010b92b0b52d8ff274d221d930954cd64a7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/2eae560ca3ac-libshaderconv.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libunpack200.so",
+      "size": 182864,
+      "sha256": "3b889feca8064c58546b3b599b2b4ef0f38c2736df08b6b26ba908f8f44568de",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3b889feca806-libunpack200.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libvirgl_test_server.so",
+      "size": 4161864,
+      "sha256": "90267421ad32d66927ddffff79794bdec19f8912a3befe8ab91a7bf94a1199bf",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/90267421ad32-libvirgl_test_server.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/arm64-v8a/libvulkan_freedreno.so",
+      "size": 10394432,
+      "sha256": "b2e90b5ad46eaf4e216e474fa40a23b8500cf4a52897c41463c0bb1006de76b9",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b2e90b5ad46e-libvulkan_freedreno.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libEGL_angle.so",
+      "size": 134976,
+      "sha256": "6cf15dd88d1c1c998d5f628b928b618768b30db64f7fcaf6b51c23c8f11a22b1",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6cf15dd88d1c-libEGL_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libGLESv2_angle.so",
+      "size": 3981164,
+      "sha256": "164cb2c0439eb1ebf4ce7a6d34c40453904c48a2b12b7645d5566812db81d152",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/164cb2c0439e-libGLESv2_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libOSMesa_2121.so",
+      "size": 16361964,
+      "sha256": "7de6b1e7e0775142cf3599a4b56168db99e35924a336dd31de30ca1818ee8134",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7de6b1e7e077-libOSMesa_2121.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libOSMesa_2300d.so",
+      "size": 15177648,
+      "sha256": "954db7e2c3b80da0ffcc8f1bf106702071b5292965c899d6ffc09ee87c535546",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/954db7e2c3b8-libOSMesa_2300d.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libOSMesa_8.so",
+      "size": 14330768,
+      "sha256": "d8132f4a374f6fd4fca4790ef2f92b18196532e479920564a513e77a954d3de0",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d8132f4a374f-libOSMesa_8.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libepoxy_0.so",
+      "size": 3231504,
+      "sha256": "30cf529c0afcb887d71e562bd6a21dc5be8d20ac2abd22e93b79be9b7abf02cf",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/30cf529c0afc-libepoxy_0.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libgl4es_114.so",
+      "size": 1713044,
+      "sha256": "ffa254b7d1f71fe25af962bf145b013f57546cfd67ee5d1c7a75ad973df183e4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/ffa254b7d1f7-libgl4es_114.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libjnidispatch.so",
+      "size": 122296,
+      "sha256": "56612c4731efe59d70281c926a915959bfc8adb24f6904885ed700a348f90f67",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/56612c4731ef-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libshaderconv.so",
+      "size": 4923944,
+      "sha256": "b67f8a6afdd847b983b73c34e3b1859ba8f7ff3f1760531ef2e1ac98aca8daec",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b67f8a6afdd8-libshaderconv.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libtwitchsdk.so",
+      "size": 5096,
+      "sha256": "6ed2bff7119b68924b003110549026d3dc28be74643ee374a4ad9a69c5368c29",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/6ed2bff7119b-libtwitchsdk.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libunpack200.so",
+      "size": 173448,
+      "sha256": "35538e735ccc98562e880b13916536e0539cfc8b2d9bdb5ddbc5d46a70c1fab7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/35538e735ccc-libunpack200.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libvirgl_test_server.so",
+      "size": 53756,
+      "sha256": "afa0db808ee84ecf30581ea86c5174826df685b595ce7f1a82bff59658655287",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/afa0db808ee8-libvirgl_test_server.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/armeabi-v7a/libvirglrenderer_1.so",
+      "size": 611696,
+      "sha256": "2b607f8309b2611b2613f8ee2cebae4feb97e7782c7e2476c35429f2ca710bd7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/2b607f8309b2-libvirglrenderer_1.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libEGL_angle.so",
+      "size": 273076,
+      "sha256": "a4cb1c49258ca8d35b80d09288b4e1f4ad73ca5274ad6967ebc59b1bbe8a6bf5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a4cb1c49258c-libEGL_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libGLESv2_angle.so",
+      "size": 5821880,
+      "sha256": "f13c1a040c2512f844ec61e2b6fbf7537f028cd704ee7c8afa60f6118cf2d833",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/f13c1a040c25-libGLESv2_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libgl4es_114.so",
+      "size": 2808944,
+      "sha256": "b53d34bf8dc086d78ddaf33b6b400da9397c85d3b55530daf8b9ed2fea08a093",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b53d34bf8dc0-libgl4es_114.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libjnidispatch.so",
+      "size": 120184,
+      "sha256": "708c2aa67400c17a643a4737e624edaa11e469dcf2ddd60889c63c25b6501e71",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/708c2aa67400-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libshaderconv.so",
+      "size": 6622188,
+      "sha256": "78935b675839f102ee59aae513b321f00010ca210e4163852f9df0c032036931",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/78935b675839-libshaderconv.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86/libunpack200.so",
+      "size": 192652,
+      "sha256": "7c47410c444687bcf2d658c72e2414c0e6586bd98df50c8a83235ee4d7d7970e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7c47410c4446-libunpack200.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libEGL_angle.so",
+      "size": 298736,
+      "sha256": "0b0f113fdd8c20edf164f8d74f2364aa22a304012c1a7ad26ee39e54944d8926",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0b0f113fdd8c-libEGL_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libGLESv2_angle.so",
+      "size": 6040744,
+      "sha256": "efbc704ece7ad6dc0733e0bcb07b07210479274428fc9eef3bc1342b2821ee47",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/efbc704ece7a-libGLESv2_angle.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libOSMesa_2121.so",
+      "size": 14764528,
+      "sha256": "b716341a84af28b91308e018da6d3826bb600400d49f32e7c24f8fbbad2da99b",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/b716341a84af-libOSMesa_2121.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libOSMesa_2300d.so",
+      "size": 17183224,
+      "sha256": "129b86b9b49b2a632ab21ab26f27bf9789964023c02b148d14aa79e759a4f160",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/129b86b9b49b-libOSMesa_2300d.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libOSMesa_8.so",
+      "size": 16750656,
+      "sha256": "140540eb2dffafb01697c21beadeddffeed956fccf99ca9ebc28e12fd9879a91",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/140540eb2dff-libOSMesa_8.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libepoxy_0.so",
+      "size": 3625264,
+      "sha256": "a458956716c649b8e526d8e1f643d33605c01a224862c68bcfd263b0f9c9aba9",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a458956716c6-libepoxy_0.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libgl4es_114.so",
+      "size": 2760568,
+      "sha256": "eba6fa929bfde45afa60ea92788493ffa5f0ebe635b482452447d0631bd5811f",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/eba6fa929bfd-libgl4es_114.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libjnidispatch.so",
+      "size": 118584,
+      "sha256": "83bd5e1914a0abdd96597a410289030a8b953d5fe2ca8f4c7a80a1aa2dd1c2a7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/83bd5e1914a0-libjnidispatch.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libshaderconv.so",
+      "size": 7451984,
+      "sha256": "3adc2aa57dc4d15722c4cddce36325bb41de3bca3e9eb4ac0e52bf9aa9e37943",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3adc2aa57dc4-libshaderconv.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libunpack200.so",
+      "size": 202672,
+      "sha256": "5827932e2f8034c5ef342e3b4a254b91546e7fa76439b39f9171e769a2314bda",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5827932e2f80-libunpack200.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libvirgl_test_server.so",
+      "size": 55752,
+      "sha256": "0a79307dd200ed6c440544a55987f7e9ad701b90918d6435aa777ac6ccf8c7b3",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0a79307dd200-libvirgl_test_server.so"
+    },
+    {
+      "path": "CMCLauncher/src/main/jniLibs/x86_64/libvirglrenderer_1.so",
+      "size": 549480,
+      "sha256": "c0baa6afef4106998494b9ec77776162777532e93c5fbe7f66f81858cfdc90ff",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/c0baa6afef41-libvirglrenderer_1.so"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/jsr305.jar",
+      "size": 19936,
+      "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/766ad2a0783f-jsr305.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-freetype.jar",
+      "size": 451815,
+      "sha256": "5c4e2ff87fa4faf5c55d9922fffec62faf449ad2733000951ab9c17da0d3adf8",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5c4e2ff87fa4-lwjgl-freetype.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-glfw.jar",
+      "size": 127327,
+      "sha256": "7a0692b1330a4be91004407fa36ff0ea9f59113dc1eb5afe7005be7b761dbdd3",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7a0692b1330a-lwjgl-glfw.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-lwjglx.jar",
+      "size": 237333,
+      "sha256": "7346cb92ce8668c314dd4d751057fc3b4fbc4c3111973cbc3e8ec50166b111c9",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7346cb92ce86-lwjgl-lwjglx.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-nanovg.jar",
+      "size": 126928,
+      "sha256": "a76270407fe11569eb83cb3e644d05efed7a5595e0a7cd0a2743d46ba83177e4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a76270407fe1-lwjgl-nanovg.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-openal.jar",
+      "size": 109538,
+      "sha256": "5cba886d84d7fe79c411c2711fcec24ac06419b6838d442cfd6c6758803db584",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/5cba886d84d7-lwjgl-openal.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-opengl.jar",
+      "size": 935027,
+      "sha256": "1cf0f56f9cf8f6e8175771031a8df92f8f49f9776086786d05064939e1bad3b5",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1cf0f56f9cf8-lwjgl-opengl.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-shaderc.jar",
+      "size": 24400,
+      "sha256": "d2fb00df0697c5fa85b0c877a2bbe61f99d2d1caf245a035188f01f9f84b5c60",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d2fb00df0697-lwjgl-shaderc.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-spvc.jar",
+      "size": 127690,
+      "sha256": "e5e5ded01b5fe2f8c1fcf189ea4242ffd23416de268b85337d134e86644a4224",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e5e5ded01b5f-lwjgl-spvc.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-stb.jar",
+      "size": 115903,
+      "sha256": "7da67c67d9674daf94248d857f15b82fa07bb9d91b006ede7eb9447de6af78be",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7da67c67d967-lwjgl-stb.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-tinyfd.jar",
+      "size": 7711,
+      "sha256": "a8a07d746a9f5bc16ba3102a5665c47c315f9846c404e7259f6b76bea4492aed",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a8a07d746a9f-lwjgl-tinyfd.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-vma.jar",
+      "size": 98286,
+      "sha256": "0d97d3dd96031873630f5c200c986dcc7aeff7654f8d524884689e74d1522018",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0d97d3dd9603-lwjgl-vma.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl-vulkan.jar",
+      "size": 6106103,
+      "sha256": "e10c2122de8fdfb5e9e35de8c59112b8104bc446554402c1f24743d976d1f96d",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e10c2122de8f-lwjgl-vulkan.jar"
+    },
+    {
+      "path": "LWJGL/3.3.3/libs/3.3.3/lwjgl.jar",
+      "size": 793777,
+      "sha256": "4210729d04c0f0218c053fffd2a95845937135484f6b4cb0ae25a6eceb4e83a3",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/4210729d04c0-lwjgl.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-freetype.jar",
+      "size": 465796,
+      "sha256": "0e1b952378e75f32024165067024f75ef608b0a9e9e578a4c7ba8d17e8446064",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0e1b952378e7-lwjgl-freetype.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-glfw.jar",
+      "size": 141649,
+      "sha256": "7755570ff7bc8bb259becf9f21b611ca49ede460b770b3f2cc26386bc30a3903",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/7755570ff7bc-lwjgl-glfw.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-lwjglx.jar",
+      "size": 237121,
+      "sha256": "95d791acd7203adc8aad12d2cef75ebe0004a1ee93d6232d7eb5322f2b985581",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/95d791acd720-lwjgl-lwjglx.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-nanovg.jar",
+      "size": 76348,
+      "sha256": "68b1bb6ada2e55e6ce09c1602e5b1dbdc6d20d2e2c17dc2124220b238eea6fb4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/68b1bb6ada2e-lwjgl-nanovg.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-openal.jar",
+      "size": 150981,
+      "sha256": "1d25e0dbee386de0c6c52d0e57de72065a4f618491222a2d9c543dd228c54059",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1d25e0dbee38-lwjgl-openal.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-opengl.jar",
+      "size": 941319,
+      "sha256": "e2c6c965ff7fd8f6adc3fb999b03a973a671e6dd7e9c824e663866bc87415f60",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e2c6c965ff7f-lwjgl-opengl.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-sdl.jar",
+      "size": 992333,
+      "sha256": "d486460962e3af2c3e0d4b6007983252485a5a16271e868338a1f9f0aaf11d9e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d486460962e3-lwjgl-sdl.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-shaderc.jar",
+      "size": 147618,
+      "sha256": "9cf95af1fdaecb318577afbc2b661aa1c754d9d054b3431803d6b73ce4a12f64",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/9cf95af1fdae-lwjgl-shaderc.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-spng.jar",
+      "size": 114650,
+      "sha256": "a6e029c4e0786c7b39fe52d1c303b920a679e04b0865bed9f830c8e950d62487",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a6e029c4e078-lwjgl-spng.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-spvc.jar",
+      "size": 141553,
+      "sha256": "961a23d428886e1dbefeb7d958b39180bbaee657ce2669d51d09cd4033d5ec6a",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/961a23d42888-lwjgl-spvc.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-stb.jar",
+      "size": 136953,
+      "sha256": "d9b3ed4eafb540a0b34b6cb7834252682293e5b4c18d614908817002268dcec4",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/d9b3ed4eafb5-lwjgl-stb.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-tinyfd.jar",
+      "size": 7677,
+      "sha256": "e216a96aa59fce6b1d51df997c52a2fd9b44a05349f958ad4a4d090e758f733e",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/e216a96aa59f-lwjgl-tinyfd.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-vma.jar",
+      "size": 103366,
+      "sha256": "1f850ed50109b7617f133a2ceb41ababf7af3d8ebad00a6e4dcf1927f55fe965",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/1f850ed50109-lwjgl-vma.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl-vulkan.jar",
+      "size": 8540747,
+      "sha256": "a3d7bc99d40b3329e1248aa19fa6180cc88bdf29175fcae1b0b45eeb7441f165",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a3d7bc99d40b-lwjgl-vulkan.jar"
+    },
+    {
+      "path": "LWJGL/3.4.1/libs/3.4.1/lwjgl.jar",
+      "size": 1169477,
+      "sha256": "63cccf4c59f6e8e6e6d537d28dea94e7471b0e41949108ba12917dc2d9ff2ecb",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/63cccf4c59f6-lwjgl.jar"
+    },
+    {
+      "path": "LWJGL/compileOnly/asm-debug-all.jar",
+      "size": 321450,
+      "sha256": "a9b800d186d3658c9661af9ba02cefac7bf7ee0d133bd99028dde1fd1f32af06",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/a9b800d186d3-asm-debug-all.jar"
+    },
+    {
+      "path": "Terracotta/src/main/jniLibs/arm64-v8a/libterracotta.so",
+      "size": 7781192,
+      "sha256": "0f5de7f7732208bac23e1befa2a7c58e23f626dcefe2a6ea41d3fc0072a6a910",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/0f5de7f77322-libterracotta.so"
+    },
+    {
+      "path": "Terracotta/src/main/jniLibs/armeabi-v7a/libterracotta.so",
+      "size": 5556284,
+      "sha256": "dff9cdc2c6829b79b5f6db94ebccb968d7206db4710dcfb4e7f7da16ea887e66",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/dff9cdc2c682-libterracotta.so"
+    },
+    {
+      "path": "Terracotta/src/main/jniLibs/x86/libterracotta.so",
+      "size": 9068520,
+      "sha256": "00db2b310a6e194c9d3cfd05e155f1861ee82ddc05b34ebec94d0f2417c5b80c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/00db2b310a6e-libterracotta.so"
+    },
+    {
+      "path": "Terracotta/src/main/jniLibs/x86_64/libterracotta.so",
+      "size": 9061792,
+      "sha256": "3f404d3edfc7feca5fdeb165ab79294d6dbcf9b59205b91b47eb0da151b8675c",
+      "url": "https://github.com/ylh440104/CMCLauncher-PE/releases/download/deps-v1/3f404d3edfc7-libterracotta.so"
+    }
+  ]
+}

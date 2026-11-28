@@ -1,0 +1,782 @@
+package org.libsdl.app;
+
+import androidx.annotation.Keep;
+
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
+import android.hardware.usb.UsbDevice;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Keep
+class HIDDeviceBLESteamController extends BluetoothGattCallback implements HIDDevice {
+
+    private static final String TAG = "hidapi";
+    private HIDDeviceManager mManager;
+    private BluetoothDevice mDevice;
+    private int mDeviceId;
+    private BluetoothGatt mGatt;
+    private boolean mIsRegistered = false;
+    private boolean mIsConnected = false;
+    private boolean mIsChromebook = false;
+    private boolean mIsReconnecting = false;
+    private boolean mHasEnabledNotifications = false;
+    private boolean mHasSeenInputUpdate = false;
+    private boolean mFrozen = false;
+    private LinkedList<GattOperation> mOperations;
+    GattOperation mCurrentOperation = null;
+    private Handler mHandler;
+    private int mProductId = -1;
+    private int mReportId = 0;
+    private UUID mInputCharacteristic;
+
+    private static final int D0G_BLE2_PID = 0x1106;
+    private static final int TRITON_BLE_PID = 0x1303;
+
+    private static final int TRANSPORT_AUTO = 0;
+    private static final int TRANSPORT_BREDR = 1;
+    private static final int TRANSPORT_LE = 2;
+
+    private static final int CHROMEBOOK_CONNECTION_CHECK_INTERVAL = 10000;
+
+    static final UUID steamControllerService = UUID.fromString("100F6C32-1735-4313-B402-38567131E5F3");
+    static final UUID inputCharacteristicD0G = UUID.fromString("100F6C33-1735-4313-B402-38567131E5F3");
+    static final UUID inputCharacteristicTriton_0x45 = UUID.fromString("100F6C7A-1735-4313-B402-38567131E5F3");
+    static final UUID inputCharacteristicTriton_0x47 = UUID.fromString("100F6C7C-1735-4313-B402-38567131E5F3");
+    static final UUID reportCharacteristic = UUID.fromString("100F6C34-1735-4313-B402-38567131E5F3");
+    static private final byte[] enterValveMode = new byte[] { (byte)0xC0, (byte)0x87, 0x03, 0x08, 0x07, 0x00 };
+
+    private HashMap<Integer, BluetoothGattCharacteristic> mOutputReportChars = new HashMap<Integer, BluetoothGattCharacteristic>();
+
+    static class GattOperation {
+        private enum Operation {
+            CHR_READ,
+            CHR_WRITE,
+            ENABLE_NOTIFICATION
+        }
+
+        Operation mOp;
+        UUID mUuid;
+        byte[] mValue;
+        BluetoothGatt mGatt;
+        boolean mResult = true;
+        int mDelayMs = 0;
+
+        private GattOperation(BluetoothGatt gatt, GattOperation.Operation operation, UUID uuid) {
+            mGatt = gatt;
+            mOp = operation;
+            mUuid = uuid;
+        }
+
+        private GattOperation(BluetoothGatt gatt, GattOperation.Operation operation, UUID uuid, int delayMs) {
+            mGatt = gatt;
+            mOp = operation;
+            mUuid = uuid;
+            mDelayMs = delayMs;
+        }
+
+        private GattOperation(BluetoothGatt gatt, GattOperation.Operation operation, UUID uuid, byte[] value) {
+            mGatt = gatt;
+            mOp = operation;
+            mUuid = uuid;
+            mValue = value;
+        }
+
+        private GattOperation(BluetoothGatt gatt, GattOperation.Operation operation, UUID uuid, byte[] value, int delayMs) {
+            mGatt = gatt;
+            mOp = operation;
+            mUuid = uuid;
+            mValue = value;
+            mDelayMs = delayMs;
+        }
+
+        public void run() {
+
+            BluetoothGattCharacteristic chr;
+
+            switch (mOp) {
+                case CHR_READ:
+                    chr = getCharacteristic(mUuid);
+
+                    if (!mGatt.readCharacteristic(chr)) {
+                        Log.e(TAG, "Unable to read characteristic " + mUuid.toString());
+                        mResult = false;
+                        break;
+                    }
+                    mResult = true;
+                    break;
+                case CHR_WRITE:
+                    chr = getCharacteristic(mUuid);
+
+                    chr.setValue(mValue);
+                    if (!mGatt.writeCharacteristic(chr)) {
+                        Log.e(TAG, "Unable to write characteristic " + mUuid.toString());
+                        mResult = false;
+                        break;
+                    }
+                    mResult = true;
+                    break;
+                case ENABLE_NOTIFICATION:
+                    chr = getCharacteristic(mUuid);
+
+                    if (chr != null) {
+                        BluetoothGattDescriptor cccd = chr.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+                        if (cccd != null) {
+                            int properties = chr.getProperties();
+                            byte[] value;
+                            if ((properties & BluetoothGattCharacteristic.PROPERTY_NOTIFY) == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                                value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
+                            } else if ((properties & BluetoothGattCharacteristic.PROPERTY_INDICATE) == BluetoothGattCharacteristic.PROPERTY_INDICATE) {
+                                value = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
+                            } else {
+                                Log.e(TAG, "Unable to start notifications on input characteristic");
+                                mResult = false;
+                                return;
+                            }
+
+                            mGatt.setCharacteristicNotification(chr, true);
+                            cccd.setValue(value);
+                            if (!mGatt.writeDescriptor(cccd)) {
+                                Log.e(TAG, "Unable to write descriptor " + mUuid.toString());
+                                mResult = false;
+                                return;
+                            }
+                            mResult = true;
+                        }
+                    }
+            }
+        }
+
+        public boolean finish() {
+            return mResult;
+        }
+
+        public int getDelayMs() { return mDelayMs; }
+
+        private BluetoothGattCharacteristic getCharacteristic(UUID uuid) {
+            BluetoothGattService valveService = mGatt.getService(steamControllerService);
+            if (valveService == null)
+                return null;
+            return valveService.getCharacteristic(uuid);
+        }
+
+        static public GattOperation readCharacteristic(BluetoothGatt gatt, UUID uuid) {
+            return new GattOperation(gatt, Operation.CHR_READ, uuid);
+        }
+
+        static public GattOperation writeCharacteristic(BluetoothGatt gatt, UUID uuid, byte[] value) {
+            return new GattOperation(gatt, Operation.CHR_WRITE, uuid, value);
+        }
+
+        static public GattOperation enableNotification(BluetoothGatt gatt, UUID uuid) {
+            return new GattOperation(gatt, Operation.ENABLE_NOTIFICATION, uuid);
+        }
+
+        static public GattOperation enableNotification(BluetoothGatt gatt, UUID uuid, int delayMs) {
+            return new GattOperation(gatt, Operation.ENABLE_NOTIFICATION, uuid, delayMs);
+        }
+    }
+
+    HIDDeviceBLESteamController(HIDDeviceManager manager, BluetoothDevice device) {
+        mManager = manager;
+        mDevice = device;
+        mDeviceId = mManager.getDeviceIDForIdentifier(getIdentifier());
+        mIsRegistered = false;
+        mIsChromebook = SDLActivity.isChromebook();
+        mOperations = new LinkedList<GattOperation>();
+        mHandler = new Handler(Looper.getMainLooper());
+
+        mGatt = connectGatt();
+        mHasEnabledNotifications = false;
+        mHasSeenInputUpdate = false;
+
+    }
+
+    String getIdentifier() {
+        return String.format("SteamController.%s", mDevice.getAddress());
+    }
+
+    BluetoothGatt getGatt() {
+        return mGatt;
+    }
+
+    private BluetoothGatt connectGatt(boolean managed) {
+        if (Build.VERSION.SDK_INT >= 23 ) {
+            try {
+                return mDevice.connectGatt(mManager.getContext(), managed, this, TRANSPORT_LE);
+            } catch (Exception e) {
+                return mDevice.connectGatt(mManager.getContext(), managed, this);
+            }
+        } else {
+            return mDevice.connectGatt(mManager.getContext(), managed, this);
+        }
+    }
+
+    private BluetoothGatt connectGatt() {
+        return connectGatt(false);
+    }
+
+    protected int getConnectionState() {
+
+        Context context = mManager.getContext();
+        if (context == null) {
+
+            return BluetoothProfile.STATE_DISCONNECTED;
+        }
+
+        BluetoothManager btManager = (BluetoothManager)context.getSystemService(Context.BLUETOOTH_SERVICE);
+        if (btManager == null) {
+
+            return BluetoothProfile.STATE_DISCONNECTED;
+        }
+
+        return btManager.getConnectionState(mDevice, BluetoothProfile.GATT);
+    }
+
+    void reconnect() {
+
+        if (getConnectionState() != BluetoothProfile.STATE_CONNECTED) {
+            mGatt.disconnect();
+            mGatt = connectGatt();
+        }
+
+    }
+
+    protected void checkConnectionForChromebookIssue() {
+        if (!mIsChromebook) {
+
+            return;
+        }
+
+        int connectionState = getConnectionState();
+
+        switch (connectionState) {
+            case BluetoothProfile.STATE_CONNECTED:
+                if (!mIsConnected) {
+
+                    Log.v(TAG, "Chromebook: We are in a very bad state; the controller shows as connected in the underlying Bluetooth layer, but we never received a callback.  Forcing a reconnect.");
+                    mIsReconnecting = true;
+                    mGatt.disconnect();
+                    mGatt = connectGatt(false);
+                    break;
+                }
+                else if (!isRegistered()) {
+                    if (mGatt.getServices().size() > 0) {
+                        Log.v(TAG, "Chromebook: We are connected to a controller, but never got our registration.  Trying to recover.");
+                        probeService(this);
+                    }
+                    else {
+                        Log.v(TAG, "Chromebook: We are connected to a controller, but never discovered services.  Trying to recover.");
+                        mIsReconnecting = true;
+                        mGatt.disconnect();
+                        mGatt = connectGatt(false);
+                        break;
+                    }
+                }
+                else {
+                    Log.v(TAG, "Chromebook: We are connected, and registered.  Everything's good!");
+                    return;
+                }
+                break;
+
+            case BluetoothProfile.STATE_DISCONNECTED:
+                Log.v(TAG, "Chromebook: We have either been disconnected, or the Chromebook BtGatt.ContextMap bug has bitten us.  Attempting a disconnect/reconnect, but we may not be able to recover.");
+
+                mIsReconnecting = true;
+                mGatt.disconnect();
+                mGatt = connectGatt(false);
+                break;
+
+            case BluetoothProfile.STATE_CONNECTING:
+                Log.v(TAG, "Chromebook: We're still trying to connect.  Waiting a bit longer.");
+                break;
+        }
+
+        final HIDDeviceBLESteamController finalThis = this;
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finalThis.checkConnectionForChromebookIssue();
+            }
+        }, CHROMEBOOK_CONNECTION_CHECK_INTERVAL);
+    }
+
+    private boolean isRegistered() {
+        return mIsRegistered;
+    }
+
+    private void setRegistered() {
+        mIsRegistered = true;
+    }
+
+    private boolean probeService(HIDDeviceBLESteamController controller) {
+
+        if (isRegistered()) {
+            return true;
+        }
+
+        if (!mIsConnected) {
+            return false;
+        }
+
+        Log.v(TAG, "probeService controller=" + controller);
+
+        for (BluetoothGattService service : mGatt.getServices()) {
+            if (service.getUuid().equals(steamControllerService)) {
+                Log.v(TAG, "Found Valve steam controller service " + service.getUuid());
+
+                for (BluetoothGattCharacteristic chr : service.getCharacteristics()) {
+                    if (chr.getUuid().equals(inputCharacteristicTriton_0x45)) {
+                        Log.v(TAG, "Found Triton input characteristic 0x45");
+                        mProductId = TRITON_BLE_PID;
+                        mReportId = 0x45;
+                        mInputCharacteristic = chr.getUuid();
+                    } else if (chr.getUuid().equals(inputCharacteristicTriton_0x47)) {
+                        Log.v(TAG, "Found Triton input characteristic 0x47");
+                        mProductId = TRITON_BLE_PID;
+                        mReportId = 0x47;
+                        mInputCharacteristic = chr.getUuid();
+                    } else if (chr.getUuid().equals(inputCharacteristicD0G)) {
+                        Log.v(TAG, "Found D0G input characteristic");
+                        mProductId = D0G_BLE2_PID;
+                        mReportId = 0x03;
+                        mInputCharacteristic = chr.getUuid();
+                    } else {
+                        Pattern reportPattern = Pattern.compile("100F6C([0-9A-Z]{2})", Pattern.CASE_INSENSITIVE);
+                        Matcher matcher = reportPattern.matcher(chr.getUuid().toString());
+
+                        if (matcher.find()) {
+                            try {
+                                int reportId = Integer.parseInt(matcher.group(1), 16);
+
+                                reportId -= 0x35;
+                                if (reportId >= 0x80) {
+
+                                    Log.v(TAG, "Found Triton output report 0x" + Integer.toString(reportId, 16));
+                                    mOutputReportChars.put(reportId, chr);
+                                }
+                            }
+                            catch (NumberFormatException nfe) {
+                                Log.w(TAG, "Could not parse report characteristic " + chr.getUuid().toString() + ": " + nfe.toString());
+                            }
+                        }
+                    }
+                }
+
+                for (BluetoothGattCharacteristic chr : service.getCharacteristics()) {
+                    if (chr.getUuid().equals(mInputCharacteristic)) {
+
+                        BluetoothGattDescriptor cccd = chr.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+                        if (cccd != null) {
+                            enableNotification(chr.getUuid());
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+
+        if ((mGatt.getServices().size() == 0) && mIsChromebook && !mIsReconnecting) {
+            Log.e(TAG, "Chromebook: Discovered services were empty; this almost certainly means the BtGatt.ContextMap bug has bitten us.");
+            mIsConnected = false;
+            mIsReconnecting = true;
+            mGatt.disconnect();
+            mGatt = connectGatt(false);
+        }
+
+        return false;
+    }
+
+    private void finishCurrentGattOperation() {
+        GattOperation op = null;
+        synchronized (mOperations) {
+            if (mCurrentOperation != null) {
+                op = mCurrentOperation;
+                mCurrentOperation = null;
+            }
+        }
+        if (op != null) {
+            boolean result = op.finish();
+
+            if (!result) {
+                mOperations.addFirst(op);
+            }
+        }
+        executeNextGattOperation();
+    }
+
+    private void executeNextGattOperation() {
+        synchronized (mOperations) {
+            if (mCurrentOperation != null)
+                return;
+
+            if (mOperations.isEmpty())
+                return;
+
+            mCurrentOperation = mOperations.removeFirst();
+        }
+
+        Runnable gattOperationRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (mOperations) {
+                        if (mCurrentOperation == null) {
+                            Log.e(TAG, "Current operation null in executor?");
+                            return;
+                        }
+
+                        mCurrentOperation.run();
+
+                    }
+                }
+            };
+
+        if (mCurrentOperation.getDelayMs() == 0) {
+
+            mHandler.post(gattOperationRunnable);
+        }
+        else {
+
+            mHandler.postDelayed(gattOperationRunnable, mCurrentOperation.getDelayMs());
+        }
+
+    }
+
+    private void queueGattOperation(GattOperation op) {
+        synchronized (mOperations) {
+            mOperations.add(op);
+        }
+        executeNextGattOperation();
+    }
+
+    private void enableNotification(UUID chrUuid) {
+
+        GattOperation op = HIDDeviceBLESteamController.GattOperation.enableNotification(mGatt, chrUuid, 500);
+        queueGattOperation(op);
+
+        final HIDDeviceBLESteamController finalThis = this;
+        final UUID finalUuid = chrUuid;
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!finalThis.mHasEnabledNotifications) {
+
+                    if (finalThis.mHasSeenInputUpdate) {
+
+                        Log.w(TAG, "WriteDescriptor has never returned, but we've seen input reports. Moving on with controller initialization.");
+                        finalThis.mHasEnabledNotifications = true;
+                        finalThis.enableValveMode();
+                        return;
+                    }
+
+                    GattOperation retry = HIDDeviceBLESteamController.GattOperation.enableNotification(finalThis.mGatt, finalUuid, 500);
+                    finalThis.queueGattOperation(retry);
+                }
+            }
+        }, 1000);
+    }
+
+    void writeCharacteristic(UUID uuid, byte[] value) {
+        GattOperation op = HIDDeviceBLESteamController.GattOperation.writeCharacteristic(mGatt, uuid, value);
+        queueGattOperation(op);
+    }
+
+    void readCharacteristic(UUID uuid) {
+        GattOperation op = HIDDeviceBLESteamController.GattOperation.readCharacteristic(mGatt, uuid);
+        queueGattOperation(op);
+    }
+
+    @Override
+    public void onConnectionStateChange(BluetoothGatt g, int status, int newState) {
+
+        mIsReconnecting = false;
+        if (newState == 2) {
+            mIsConnected = true;
+
+            if (!isRegistered()) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGatt.discoverServices();
+                    }
+                });
+            }
+        }
+        else if (newState == 0) {
+            mIsConnected = false;
+        }
+
+    }
+
+    @Override
+    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
+        if (status == 0) {
+            if (gatt.getServices().size() == 0) {
+                Log.v(TAG, "onServicesDiscovered returned zero services; something has gone horribly wrong down in Android's Bluetooth stack.");
+                mIsReconnecting = true;
+                mIsConnected = false;
+                gatt.disconnect();
+                mGatt = connectGatt(false);
+            } else {
+                if (getProductId() == TRITON_BLE_PID) {
+
+                    mGatt.requestMtu(517);
+                }
+
+                probeService(this);
+            }
+        }
+    }
+
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+        if (characteristic.getUuid().equals(reportCharacteristic) && !mFrozen) {
+            mManager.HIDDeviceReportResponse(getId(), characteristic.getValue());
+        }
+
+        finishCurrentGattOperation();
+    }
+
+    @Override
+    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+        if (characteristic.getUuid().equals(reportCharacteristic)) {
+
+            if (!isRegistered()) {
+                Log.v(TAG, "Registering Steam Controller with ID: " + getId());
+                mManager.HIDDeviceConnected(getId(), getIdentifier(), getVendorId(), getProductId(), getSerialNumber(), getVersion(), getManufacturerName(), getProductName(), 0, 0, 0, 0, true, mReportId);
+                setRegistered();
+            }
+        }
+
+        finishCurrentGattOperation();
+    }
+
+    @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+
+        if (characteristic.getUuid().equals(mInputCharacteristic) && !mFrozen) {
+            mHasSeenInputUpdate = true;
+            mManager.HIDDeviceInputReport(getId(), characteristic.getValue());
+        }
+    }
+
+    @Override
+    public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+
+    }
+
+    private void enableValveMode()
+    {
+        BluetoothGattService valveService = mGatt.getService(steamControllerService);
+        if (valveService == null)
+            return;
+
+        BluetoothGattCharacteristic reportChr = valveService.getCharacteristic(reportCharacteristic);
+        if (reportChr != null) {
+            if (getProductId() == TRITON_BLE_PID) {
+
+                Log.v(TAG, "Registering Triton Steam Controller with ID: " + getId());
+                mManager.HIDDeviceConnected(getId(), getIdentifier(), getVendorId(), getProductId(), getSerialNumber(), getVersion(), getManufacturerName(), getProductName(), 0, 0, 0, 0, true, mReportId);
+                setRegistered();
+            } else {
+
+                Log.v(TAG, "Writing report characteristic to enter valve mode");
+                reportChr.setValue(enterValveMode);
+                mGatt.writeCharacteristic(reportChr);
+            }
+        }
+    }
+
+    @Override
+    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        BluetoothGattCharacteristic chr = descriptor.getCharacteristic();
+
+        if (chr.getUuid().equals(mInputCharacteristic)) {
+            mHasEnabledNotifications = true;
+            enableValveMode();
+        }
+
+        finishCurrentGattOperation();
+    }
+
+    @Override
+    public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+
+    }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+
+    }
+
+    @Override
+    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+
+    }
+
+    @Override
+    public int getId() {
+        return mDeviceId;
+    }
+
+    @Override
+    public int getVendorId() {
+
+        final int VALVE_USB_VID = 0x28DE;
+        return VALVE_USB_VID;
+    }
+
+    @Override
+    public int getProductId() {
+        if (mProductId > 0) {
+
+            return mProductId;
+        }
+
+        if (mDevice.getName().startsWith("Steam Ctrl")) {
+
+            mProductId = TRITON_BLE_PID;
+        } else {
+
+            mProductId = D0G_BLE2_PID;
+        }
+
+        return mProductId;
+    }
+
+    @Override
+    public String getSerialNumber() {
+
+        return "12345";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
+    public String getManufacturerName() {
+        return "Valve Corporation";
+    }
+
+    @Override
+    public String getProductName() {
+        return "Steam Controller";
+    }
+
+    @Override
+    public UsbDevice getDevice() {
+        return null;
+    }
+
+    @Override
+    public boolean open() {
+        return true;
+    }
+
+    @Override
+    public int writeReport(byte[] report, boolean feature) {
+        if (!isRegistered()) {
+            Log.e(TAG, "Attempted writeReport before Steam Controller is registered!");
+            if (mIsConnected) {
+                probeService(this);
+            }
+            return -1;
+        }
+
+        if (feature) {
+
+            byte[] actual_report = Arrays.copyOfRange(report, 1, report.length - 1);
+
+            writeCharacteristic(reportCharacteristic, actual_report);
+            return report.length;
+        } else {
+
+            if (getProductId() == D0G_BLE2_PID) {
+
+                writeCharacteristic(reportCharacteristic, report);
+                return report.length;
+            }
+
+            if (report.length > 0) {
+                int reportId = report[0] & 0xFF;
+                BluetoothGattCharacteristic targetedReportCharacteristic = mOutputReportChars.get(reportId);
+                if (targetedReportCharacteristic != null) {
+                    byte[] actual_report = Arrays.copyOfRange(report, 1, report.length - 1);
+
+                    writeCharacteristic(targetedReportCharacteristic.getUuid(), actual_report);
+                    return report.length;
+                } else {
+                    Log.w(TAG, "Got report write request for unknown report type 0x" + Integer.toString(reportId, 16));
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public boolean readReport(byte[] report, boolean feature) {
+        if (!isRegistered()) {
+            Log.e(TAG, "Attempted readReport before Steam Controller is registered!");
+            if (mIsConnected) {
+                probeService(this);
+            }
+            return false;
+        }
+
+        if (feature) {
+            readCharacteristic(reportCharacteristic);
+            return true;
+        } else {
+
+            return false;
+        }
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public void setFrozen(boolean frozen) {
+        mFrozen = frozen;
+    }
+
+    @Override
+    public void shutdown() {
+        close();
+
+        BluetoothGatt g = mGatt;
+        if (g != null) {
+            g.disconnect();
+            g.close();
+            mGatt = null;
+        }
+        mManager = null;
+        mIsRegistered = false;
+        mIsConnected = false;
+        mOperations.clear();
+    }
+
+}

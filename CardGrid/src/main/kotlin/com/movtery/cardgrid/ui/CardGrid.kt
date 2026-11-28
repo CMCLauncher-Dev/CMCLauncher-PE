@@ -1,0 +1,410 @@
+package com.movtery.cardgrid.ui
+
+import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.node.DrawModifierNode
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.movtery.cardgrid.model.CardInteraction
+import com.movtery.cardgrid.state.CardGridState
+import com.movtery.cardgrid.state.GridCard
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
+
+private val GridFadeExtent = 72.dp
+
+private const val GridLineMaxAlpha = 0.35f
+
+private const val GhostAlpha = 0.5f
+
+private const val SlotStrokeAlpha = 0.5f
+
+@Composable
+fun CardGrid(
+    state: CardGridState,
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    cardBackground: (@Composable (Modifier) -> Modifier)? = null,
+) {
+    val hostDirection = LocalLayoutDirection.current
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        CardGridCanvas(
+            state = state,
+            modifier = modifier,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            cardBackground = cardBackground,
+            contentDirection = hostDirection
+        )
+    }
+}
+
+@Composable
+private fun CardGridCanvas(
+    state: CardGridState,
+    modifier: Modifier = Modifier,
+    containerColor: Color,
+    contentColor: Color,
+    cardBackground: (@Composable (Modifier) -> Modifier)?,
+    contentDirection: LayoutDirection
+) {
+    val density = LocalDensity.current
+    val heightPx = state.gridHeightPx()
+    val animatedHeight = with(density) { heightPx.toDp() }
+
+    val haptics = LocalHapticFeedback.current
+
+    BackHandler(enabled = state.isAdjusting) {
+        state.exitAdjusting()
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                with(density) {
+                    state.updateGeometry(coordinates.size.width.toDp().value, this)
+                }
+                state.onAreaPositioned(coordinates.positionInRoot())
+            }
+            .height(animatedHeight)
+            .pointerInput(Unit) {
+
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+
+                    if (down.isConsumed) return@awaitEachGesture
+                    val start = down.position
+                    val slopPx = viewConfiguration.touchSlop
+                    val longPressMillis = viewConfiguration.longPressTimeoutMillis
+
+                    if (!state.isAdjusting) {
+
+                        val hit = state.cardAt(start) ?: return@awaitEachGesture
+                        val longPressed = awaitLongPressOrAbort(down.id, start, slopPx, longPressMillis)
+                        if (!longPressed) return@awaitEachGesture
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        state.onCardDragStart(hit, start)
+                        runSession(
+                            pointerId = down.id,
+                            startPosition = start,
+                            slopPx = slopPx,
+                            state = state,
+                            dispatch = { state.onCardDrag(it) },
+                            onUp = { moved ->
+                                if (moved) state.onCardDragEnd() else state.onCardDragCancel()
+                            }
+                        )
+                    } else {
+                        val edgeHit = state.resizeEdgeAt(start)
+                        val card = state.cardAt(start)
+                        when {
+
+                            edgeHit != null -> {
+                                val (hitCard, edge) = edgeHit
+                                state.onResizeStart(hitCard, edge, start)
+                                runSession(
+                                    pointerId = down.id,
+                                    startPosition = start,
+                                    slopPx = slopPx,
+                                    state = state,
+                                    dispatch = { state.onResize(it) },
+                                    onUp = { state.onResizeEnd() }
+                                )
+                            }
+
+                            card != null -> {
+                                state.onCardDragStart(card, start)
+                                runSession(
+                                    pointerId = down.id,
+                                    startPosition = start,
+                                    slopPx = slopPx,
+                                    state = state,
+                                    dispatch = { state.onCardDrag(it) },
+                                    onUp = { moved ->
+                                        when {
+                                            moved -> state.onCardDragEnd()
+                                            card.id == state.adjustingCardId -> state.onCardDragCancel()
+                                            else -> {
+                                                state.onCardDragCancel()
+                                                state.exitAdjusting()
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+
+                            else -> {
+                                val tapped = awaitUpWithoutSlop(down.id, start, slopPx)
+                                if (tapped) state.exitAdjusting()
+                            }
+                        }
+                    }
+                }
+            }
+    ) {
+        state.cards.forEach { card ->
+            key(card.id) {
+                CardSlot(
+                    state = state,
+                    card = card,
+                    containerColor = containerColor,
+                    contentColor = contentColor,
+                    cardBackground = cardBackground,
+                    contentDirection = contentDirection
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CardSlot(
+    state: CardGridState,
+    card: GridCard,
+    containerColor: Color,
+    contentColor: Color,
+    cardBackground: (@Composable (Modifier) -> Modifier)?,
+    contentDirection: LayoutDirection
+) {
+    val rectProvider: () -> Rect = { state.renderRectOf(card) }
+    val interaction = state.interactionOf(card.id)
+    val zIndex = when {
+        state.isSessionCard(card.id) -> 3f
+        interaction != CardInteraction.Idle -> 2f
+        else -> 1f
+    }
+    val adjusting = state.adjustingCardId == card.id
+
+    Box(
+        modifier = Modifier
+            .cardBounds(rectProvider)
+            .zIndex(zIndex)
+    ) {
+        CardSurface(
+            interaction = interaction,
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (state.isSessionCard(card.id)) Modifier.graphicsLayer { alpha = GhostAlpha } else Modifier),
+            shape = card.type.shape ?: MaterialTheme.shapes.extraLarge,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            cardBackground = cardBackground,
+            selected = adjusting
+        ) {
+            CompositionLocalProvider(LocalLayoutDirection provides contentDirection) {
+                card.type.content(state.cardStateOf(card), card.id)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CardSurface(
+    interaction: CardInteraction,
+    modifier: Modifier = Modifier,
+    shape: Shape,
+    containerColor: Color,
+    contentColor: Color,
+    cardBackground: (@Composable (Modifier) -> Modifier)?,
+    selected: Boolean,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val elevation = 0.dp
+    val handles = if (selected) {
+        Modifier.selectionHandles(color = MaterialTheme.colorScheme.primary)
+    } else {
+        Modifier
+    }
+
+    Card(
+        modifier = modifier.then(handles),
+        shape = shape,
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation)
+    ) {
+        Column(
+            modifier = cardBackground?.invoke(Modifier) ?: Modifier,
+            content = content
+        )
+    }
+}
+
+@SuppressLint("ModifierNodeInspectableProperties")
+private data class SelectionHandlesElement(
+    val color: Color,
+    val handleLength: Dp,
+    val handleThickness: Dp
+) : ModifierNodeElement<SelectionHandlesNode>() {
+    override fun create() = SelectionHandlesNode(color, handleLength, handleThickness)
+
+    override fun update(node: SelectionHandlesNode) {
+        node.color = color
+        node.handleLength = handleLength
+        node.handleThickness = handleThickness
+    }
+}
+
+private class SelectionHandlesNode(
+    var color: Color,
+    var handleLength: Dp,
+    var handleThickness: Dp
+) : DrawModifierNode, Modifier.Node() {
+    override fun ContentDrawScope.draw() {
+        drawContent()
+
+        fun drawPill(center: Offset, wide: Boolean) {
+            val pillWidth = if (wide) handleLength.toPx() else handleThickness.toPx()
+            val pillHeight = if (wide) handleThickness.toPx() else handleLength.toPx()
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(center.x - pillWidth / 2, center.y - pillHeight / 2),
+                size = Size(pillWidth, pillHeight),
+                cornerRadius = CornerRadius(handleThickness.toPx() / 2)
+            )
+        }
+
+        drawPill(center = Offset(0f, size.height / 2), wide = false)
+        drawPill(center = Offset(size.width, size.height / 2), wide = false)
+        drawPill(center = Offset(size.width / 2, 0f), wide = true)
+        drawPill(center = Offset(size.width / 2, size.height), wide = true)
+    }
+}
+
+private fun Modifier.selectionHandles(
+    color: Color,
+    handleLength: Dp = 16.dp,
+    handleThickness: Dp = 5.dp,
+): Modifier = then(SelectionHandlesElement(color, handleLength, handleThickness))
+
+private fun Modifier.cardBounds(rectProvider: () -> Rect): Modifier = this
+    .absoluteOffset {
+        val rect = rectProvider()
+        IntOffset(rect.left.roundToInt(), rect.top.roundToInt())
+    }
+    .layout { measurable, constraints ->
+        val rect = rectProvider()
+        val width = rect.width.roundToInt().coerceAtLeast(1)
+        val height = rect.height.roundToInt().coerceAtLeast(1)
+        val placeable = measurable.measure(
+            constraints.copy(
+                minWidth = width,
+                maxWidth = width,
+                minHeight = height,
+                maxHeight = height
+            )
+        )
+        layout(width, height) { placeable.place(0, 0) }
+    }
+
+private suspend fun AwaitPointerEventScope.awaitLongPressOrAbort(
+    pointerId: PointerId,
+    startPosition: Offset,
+    slopPx: Float,
+    timeoutMillis: Long
+): Boolean {
+    var longPressed = false
+    try {
+        withTimeout(timeoutMillis) {
+            while (true) {
+                val event = awaitPointerEvent()
+                val change = event.changes.firstOrNull { it.id == pointerId } ?: continue
+                if (!change.pressed) return@withTimeout
+                if ((change.position - startPosition).getDistance() > slopPx) return@withTimeout
+            }
+        }
+    } catch (_: PointerEventTimeoutCancellationException) {
+        longPressed = true
+    }
+    return longPressed
+}
+
+private suspend fun AwaitPointerEventScope.awaitUpWithoutSlop(
+    pointerId: PointerId,
+    startPosition: Offset,
+    slopPx: Float
+): Boolean {
+    while (true) {
+        val event = awaitPointerEvent()
+        val change = event.changes.firstOrNull { it.id == pointerId } ?: continue
+        if ((change.position - startPosition).getDistance() > slopPx) return false
+        if (!change.pressed) return true
+    }
+}
+
+private suspend fun AwaitPointerEventScope.runSession(
+    pointerId: PointerId,
+    startPosition: Offset,
+    slopPx: Float,
+    state: CardGridState,
+    dispatch: (Offset) -> Unit,
+    onUp: (moved: Boolean) -> Unit
+) {
+    try {
+        while (true) {
+            val event = awaitPointerEvent()
+            val change = event.changes.firstOrNull { it.id == pointerId } ?: continue
+            if (!change.pressed) {
+                event.changes.forEach { it.consume() }
+                onUp((change.position - startPosition).getDistance() > slopPx)
+                return
+            }
+            dispatch(change.position)
+            event.changes.forEach { it.consume() }
+        }
+    } finally {
+        if (state.hasSession) state.onCardDragCancel()
+    }
+}
