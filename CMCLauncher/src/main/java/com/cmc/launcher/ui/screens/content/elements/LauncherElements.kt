@@ -543,12 +543,33 @@ fun Background(
     modifier: Modifier = Modifier,
     allowVideo: Boolean = true
 ) {
+    val blur = AllSettings.backgroundBlur.state
+    val opacity = AllSettings.launcherBackgroundOpacity.state
+    val backgroundMode = AllSettings.backgroundBlurType.state == BackgroundBlur.Background
+    val backgroundBlurEnabled = backgroundMode && blur > 0 && opacity < 100
+    val layerCapture = !backgroundMode && blur > 0 && opacity < 100 && viewModel.isValid
+    val density = LocalDensity.current
     LaunchedEffect(viewModel.isValid) {
         if (viewModel.isValid && AllSettings.launcherBackgroundOpacity.state >= 100) {
             AllSettings.launcherBackgroundOpacity.save(80)
         }
     }
-    Box(modifier) {
+    Box(
+        modifier = modifier
+            .then(
+                if (backgroundBlurEnabled && Build.VERSION.SDK_INT >= 31) {
+                    Modifier.blur(blur.dp)
+                } else {
+                    Modifier
+                }
+            )
+            .backgroundCapture(
+                store = viewModel,
+                recordContent = layerCapture,
+                blurRadiusPx = blur * density.density,
+                whiteOverlayAlpha = if (backgroundBlurEnabled) whiteOverlayAlpha(blur) else 0f
+            )
+    ) {
         if (viewModel.isValid && (viewModel.isImage || viewModel.isVideo && allowVideo)) {
             com.cmc.launcher.ui.components.StaticBackground(
                 file = viewModel.backgroundFile,

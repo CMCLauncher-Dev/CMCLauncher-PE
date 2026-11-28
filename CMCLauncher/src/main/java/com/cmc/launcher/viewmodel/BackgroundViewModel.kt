@@ -46,6 +46,35 @@ class BackgroundViewModel: ViewModel() {
     var refreshTrigger by mutableStateOf(false)
         private set
 
+    var backgroundBounds by mutableStateOf(Rect.Zero)
+        private set
+
+    private val glassBlur = BackgroundGlassBlur(backgroundFile)
+
+    val glassLayer: GraphicsLayer? get() = glassBlur.glassLayer
+
+    val captureLayer: GraphicsLayer? get() = glassBlur.captureLayer
+
+    val blurredBackground: ImageBitmap? get() = glassBlur.blurredBackground
+
+    fun updateBackgroundBounds(coordinates: LayoutCoordinates) {
+        val position = coordinates.positionOnScreen()
+        if (!position.isSpecified) return
+        backgroundBounds = Rect(position, coordinates.size.toSize())
+    }
+
+    fun attachGlassLayer(layer: GraphicsLayer?) {
+        glassBlur.attachGlassLayer(layer)
+    }
+
+    fun attachCaptureLayer(layer: GraphicsLayer?) {
+        glassBlur.attachCaptureLayer(layer)
+    }
+
+    suspend fun captureGlassFrame() {
+        glassBlur.captureFrame()
+    }
+
     private suspend fun updateState() {
         val (isImage0, isVideo0) = withContext(Dispatchers.IO) {
             val isImage = backgroundFile.isImageFile()
@@ -63,7 +92,30 @@ class BackgroundViewModel: ViewModel() {
     }
 
     init {
-        viewModelScope.launch { updateState() }
+        viewModelScope.launch(Dispatchers.Main) {
+            updateState()
+        }
+
+        viewModelScope.launch {
+            snapshotFlow {
+                BlurConfig(
+                    blur = AllSettings.backgroundBlur.state,
+                    blurType = AllSettings.backgroundBlurType.state,
+                    opacity = AllSettings.launcherBackgroundOpacity.state,
+                    valid = isValid,
+                    isImage = isImage,
+                    generation = refreshTrigger
+                )
+            }.collectLatest { config ->
+                when {
+                    Build.VERSION.SDK_INT >= 31 || !config.valid ||
+                        config.blur <= 0 || config.opacity >= 100 ->
+                        glassBlur.clearBlurredBackground()
+                    config.isImage && config.blurType == BackgroundBlur.Background ->
+                        glassBlur.refreshStaticDisplayBitmap(config.blur)
+                }
+            }
+        }
     }
 
     suspend fun delete() {
@@ -91,6 +143,15 @@ class BackgroundViewModel: ViewModel() {
         }
     }
 }
+
+private data class BlurConfig(
+    val blur: Int,
+    val blurType: BackgroundBlur,
+    val opacity: Int,
+    val valid: Boolean,
+    val isImage: Boolean,
+    val generation: Boolean
+)
 
 val LocalBackgroundViewModel = compositionLocalOf<BackgroundViewModel?> {
     error("No BackgroundViewModel provided")
