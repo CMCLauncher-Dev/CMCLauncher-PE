@@ -546,8 +546,9 @@ fun Background(
     val blur = AllSettings.backgroundBlur.state
     val opacity = AllSettings.launcherBackgroundOpacity.state
     val backgroundMode = AllSettings.backgroundBlurType.state == BackgroundBlur.Background
-    val backgroundBlurEnabled = backgroundMode && blur > 0 && opacity < 100
-    val layerCapture = !backgroundMode && blur > 0 && opacity < 100 && viewModel.isValid
+    val glassEnabled = AllSettings.backgroundGlass.state
+    val backgroundBlurEnabled = glassEnabled && backgroundMode && blur > 0 && opacity < 100
+    val layerCapture = glassEnabled && !backgroundMode && blur > 0 && opacity < 100 && viewModel.isValid
     val density = LocalDensity.current
     LaunchedEffect(viewModel.isValid) {
         if (viewModel.isValid && AllSettings.launcherBackgroundOpacity.state >= 100) {

@@ -266,9 +266,10 @@ private fun TopBar(
     var menuExpanded by remember { mutableStateOf(false) }
     Surface(color = Color.Transparent, contentColor = MaterialTheme.colorScheme.onSurface) {
         Column(
-            modifier = Modifier.backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+            modifier = Modifier.background(launcherChromeColor())
+                .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
         ) {
-            Row(Modifier.fillMaxWidth().statusBarsPadding().heightIn(min = 56.dp).padding(horizontal = Space.sm),
+            Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = Space.sm),
                 verticalAlignment = Alignment.CenterVertically) {
                 if (showBack) {
                     IconButton(onClick = onBack) {
@@ -323,10 +324,11 @@ private fun BottomNav(destinations: List<NavDestination>) {
     val colors = MaterialTheme.colorScheme
     Surface(color = Color.Transparent, contentColor = colors.onSurface) {
         Column(
-            modifier = Modifier.backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+            modifier = Modifier.background(launcherChromeColor())
+                .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
         ) {
             HorizontalDivider(color = colors.onSurface.copy(alpha = 0.08f))
-            Row(Modifier.fillMaxWidth().navigationBarsPadding().selectableGroup()
+            Row(Modifier.fillMaxWidth().selectableGroup()
                 .padding(horizontal = Space.sm, vertical = Space.xs), verticalAlignment = Alignment.CenterVertically) {
                 destinations.forEach { destination ->
                     Column(Modifier.weight(1f).clip(FieldShape)

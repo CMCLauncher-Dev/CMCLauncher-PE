@@ -53,6 +53,7 @@ fun Modifier.backgroundGlass(
     color: Color,
     enabled: Boolean = true,
 ): Modifier {
+    if (!AllSettings.backgroundGlass.state) return this
     if (AllSettings.backgroundBlurType.state == BackgroundBlur.Background) return this
     if (!enabled) return this
     val background = LocalBackgroundViewModel.current?.takeIf { it.isValid } ?: return this

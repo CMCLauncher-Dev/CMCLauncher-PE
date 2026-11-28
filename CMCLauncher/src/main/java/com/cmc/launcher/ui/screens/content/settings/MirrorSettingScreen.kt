@@ -512,6 +512,13 @@ private fun BlurSection() {
         caption = stringResource(R.string.pe_appearance_section_caption)
     )
     CmcPanel {
+        CmcSwitchRow(
+            title = stringResource(R.string.pe_glass_enabled_title),
+            summary = stringResource(R.string.pe_glass_enabled_summary),
+            checked = AllSettings.backgroundGlass.state,
+            onCheckedChange = { AllSettings.backgroundGlass.save(it) }
+        )
+        CmcDivider(modifier = Modifier.padding(horizontal = Space.xs))
         CmcSliderRow(
             title = stringResource(R.string.pe_blur_strength_title),
             summary = stringResource(R.string.pe_blur_strength_summary),
@@ -520,6 +527,7 @@ private fun BlurSection() {
             valueRange = 0f..40f,
             valueLabel = blur.toString(),
             steps = 39,
+            enabled = AllSettings.backgroundGlass.state,
             onValueChangeFinished = {
                 AllSettings.backgroundBlur.save(AllSettings.backgroundBlur.state)
             }

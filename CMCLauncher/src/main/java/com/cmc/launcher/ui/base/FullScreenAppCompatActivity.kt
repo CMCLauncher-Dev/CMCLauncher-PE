@@ -7,6 +7,8 @@ import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnSystemUiVisibilityChangeListener
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.CallSuper
@@ -30,6 +32,11 @@ abstract class FullScreenAppCompatActivity : AbstractAppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         applyFullscreen()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) applyFullscreen()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -110,6 +117,14 @@ abstract class FullScreenAppCompatActivity : AbstractAppCompatActivity() {
 
     private fun applyFullscreen() {
         val decorView = window.decorView
+        if (Build.VERSION.SDK_INT >= 30) {
+            window.setDecorFitsSystemWindows(false)
+            window.insetsController?.let { controller ->
+                controller.systemBarsBehavior =
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+            }
+        }
         val visibilityChangeListener = OnSystemUiVisibilityChangeListener { visibility: Int ->
             if (!isInMultiWindowMode) {
                 if ((visibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {

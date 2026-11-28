@@ -99,7 +99,7 @@ private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : BaseAppCompatActivity() {
-    override fun isIgnoreNotch(): Boolean = AllSettings.launcherFullScreen.getValue()
+    override fun isIgnoreNotch(): Boolean = true
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         PetGazeRouter.onTouchEvent(event)

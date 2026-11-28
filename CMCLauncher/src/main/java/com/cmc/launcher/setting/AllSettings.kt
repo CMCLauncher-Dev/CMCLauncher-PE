@@ -203,6 +203,8 @@ object AllSettings : SettingsRegistry() {
 
     val backgroundBlur = intSetting("backgroundBlur", 24, 0..40)
 
+    val backgroundGlass = boolSetting("backgroundGlass", true)
+
     val backgroundBlurType = enumSetting("backgroundBlurType", BackgroundBlur.Foreground)
 
     val liquidGlass = boolSetting("liquidGlass", true)
