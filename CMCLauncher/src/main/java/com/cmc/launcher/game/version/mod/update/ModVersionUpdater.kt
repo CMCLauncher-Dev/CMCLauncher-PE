@@ -1,6 +1,7 @@
 package com.cmc.launcher.game.version.mod.update
 
 import com.cmc.launcher.R
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.coroutine.Task
 import com.cmc.launcher.game.download.addon.platform.PlatformVersion
 import com.cmc.launcher.game.download.addon.platform.mcim.mapMCIMMirrorUrls
@@ -19,7 +20,7 @@ private const val TAG = "ModVersionUpdater"
 class ModVersionUpdater(
     val mods: List<PlatformVersion>,
     private val targetDir: File,
-    private val maxDownloadThreads: Int = DEFAULT_DOWNLOAD_THREADS
+    private val maxDownloadThreads: Int = AllSettings.downloadConnections.state
 ) {
     suspend fun startDownload(task: Task) {
         val tasks = mods.map { newVersion ->

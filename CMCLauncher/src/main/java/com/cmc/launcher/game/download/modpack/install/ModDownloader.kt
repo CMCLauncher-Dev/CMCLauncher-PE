@@ -1,6 +1,7 @@
 package com.cmc.launcher.game.download.modpack.install
 
 import com.cmc.launcher.R
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.coroutine.Task
 import com.cmc.launcher.game.download.engine.findHttpCode
 import com.cmc.launcher.game.version.download.DownloadFailedException
@@ -26,7 +27,7 @@ private const val TAG = "ModDownloader"
 
 class ModDownloader(
     val mods: List<ModFile>,
-    private val maxDownloadThreads: Int = 64
+    private val maxDownloadThreads: Int = AllSettings.downloadConnections.state
 ) {
     suspend fun startDownload(task: Task) {
         task.updateMessage(null)

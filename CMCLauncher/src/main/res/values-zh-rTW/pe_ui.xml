@@ -153,7 +153,15 @@
     <string name="pe_download_concurrency_title">下載</string>
     <string name="pe_download_concurrency_caption">大檔案分段下載的並行數</string>
     <string name="pe_download_threads_title">下載執行緒數</string>
-    <string name="pe_download_threads_summary">1 使用單一連線，2–32 將大檔案分段並行下載</string>
+<string name="pe_download_threads_summary">1 使用單一連線，2–32 將大檔案分段並行下載</string>
+    <string name="pe_download_connections_title">同時下載數</string>
+    <string name="pe_download_connections_summary">同時下載的檔案數量</string>
+    <string name="pe_download_wifi_only_title">僅 Wi-Fi</string>
+    <string name="pe_download_wifi_only_summary">使用行動網路時暫停下載</string>
+    <string name="pe_download_speed_title">下載限速</string>
+    <string name="pe_download_speed_summary">所有下載共用的限速</string>
+    <string name="pe_download_speed_unlimited">不限速</string>
+
     <string name="mods_dependency_check">檢查依賴</string>
     <string name="mods_dependency_check_empty">未發現缺少前置或重複模組</string>
     <string name="mods_dependency_missing">缺少前置：%1$s 需要 %2$s</string>

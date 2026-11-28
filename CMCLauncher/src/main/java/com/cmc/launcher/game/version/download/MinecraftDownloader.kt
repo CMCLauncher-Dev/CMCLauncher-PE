@@ -2,6 +2,7 @@ package com.cmc.launcher.game.version.download
 
 import android.content.Context
 import com.cmc.launcher.R
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.coroutine.Task
 import com.cmc.launcher.game.path.getGameHome
 import com.cmc.launcher.game.versioninfo.models.GameManifest
@@ -30,7 +31,7 @@ class MinecraftDownloader(
     private val onCompletion: suspend (Task) -> Unit = {},
     private val onError: (message: String) -> Unit = {},
     private val onThrowable: ((throwable: Throwable) -> Unit)? = null,
-    private val maxDownloadThreads: Int = DEFAULT_DOWNLOAD_THREADS
+    private val maxDownloadThreads: Int = AllSettings.downloadConnections.state
 ) {
     private var allDownloadTasks = mutableListOf<DownloadTask>()
 

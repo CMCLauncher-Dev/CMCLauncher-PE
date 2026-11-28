@@ -49,6 +49,7 @@ import com.cmc.launcher.ui.kit.CmcRadioRow
 import com.cmc.launcher.ui.kit.CmcRow
 import com.cmc.launcher.ui.kit.CmcSection
 import com.cmc.launcher.ui.kit.CmcSliderRow
+import com.cmc.launcher.ui.kit.CmcSwitchRow
 import com.cmc.launcher.ui.kit.CmcSwatch
 import com.cmc.launcher.ui.kit.CmcTag
 import com.cmc.launcher.ui.screens.NestedNavKey
@@ -429,6 +430,9 @@ private fun BackgroundSection() {
 @Composable
 private fun DownloadSection() {
     val threads = AllSettings.downloadThreads.state
+    val connections = AllSettings.downloadConnections.state
+    val wifiOnly = AllSettings.downloadWifiOnly.state
+    val speedLimit = AllSettings.downloadSpeedLimitKbps.state
     CmcSection(
         title = stringResource(R.string.pe_download_concurrency_title),
         caption = stringResource(R.string.pe_download_concurrency_caption)
@@ -444,6 +448,38 @@ private fun DownloadSection() {
             steps = 30,
             onValueChangeFinished = {
                 AllSettings.downloadThreads.save(AllSettings.downloadThreads.state)
+            }
+        )
+        CmcDivider(modifier = Modifier.padding(horizontal = Space.xs))
+        CmcSliderRow(
+            title = stringResource(R.string.pe_download_connections_title),
+            summary = stringResource(R.string.pe_download_connections_summary),
+            value = connections.toFloat(),
+            onValueChange = { AllSettings.downloadConnections.updateState(it.toInt()) },
+            valueRange = 1f..64f,
+            valueLabel = connections.toString(),
+            steps = 62,
+            onValueChangeFinished = {
+                AllSettings.downloadConnections.save(AllSettings.downloadConnections.state)
+            }
+        )
+        CmcDivider(modifier = Modifier.padding(horizontal = Space.xs))
+        CmcSwitchRow(
+            title = stringResource(R.string.pe_download_wifi_only_title),
+            summary = stringResource(R.string.pe_download_wifi_only_summary),
+            checked = wifiOnly,
+            onCheckedChange = { AllSettings.downloadWifiOnly.save(it) }
+        )
+        CmcDivider(modifier = Modifier.padding(horizontal = Space.xs))
+        CmcSliderRow(
+            title = stringResource(R.string.pe_download_speed_title),
+            summary = stringResource(R.string.pe_download_speed_summary),
+            value = speedLimit.toFloat(),
+            onValueChange = { AllSettings.downloadSpeedLimitKbps.updateState(it.toInt()) },
+            valueRange = 0f..10240f,
+            valueLabel = if (speedLimit == 0) stringResource(R.string.pe_download_speed_unlimited) else "$speedLimit KB/s",
+            onValueChangeFinished = {
+                AllSettings.downloadSpeedLimitKbps.save(AllSettings.downloadSpeedLimitKbps.state)
             }
         )
     }

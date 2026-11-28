@@ -84,6 +84,12 @@ object AllSettings : SettingsRegistry() {
 
     val downloadThreads = intSetting("downloadThreads", 4, 1..32)
 
+    val downloadConnections = intSetting("downloadConnections", 64, 1..64)
+
+    val downloadWifiOnly = boolSetting("downloadWifiOnly", false)
+
+    val downloadSpeedLimitKbps = intSetting("downloadSpeedLimitKbps", 0, 0..10240)
+
     val physicalMouseMode = boolSetting("physicalMouseMode", true)
 
     val physicalKeyImeCode = intSetting("physicalKeyImeCode", null)

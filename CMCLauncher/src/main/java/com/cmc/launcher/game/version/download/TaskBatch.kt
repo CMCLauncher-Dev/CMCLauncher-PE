@@ -1,9 +1,12 @@
 package com.cmc.launcher.game.version.download
 
 import com.cmc.launcher.coroutine.Task
+import com.cmc.launcher.context.GlobalContext
 import com.cmc.launcher.game.download.engine.BatchDownloader
 import com.cmc.launcher.game.download.engine.BatchProgress
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.utils.logging.Logger
+import com.cmc.launcher.utils.network.isUsingMobileData
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,6 +25,9 @@ suspend fun Task.runBatchDownloads(
     onSnapshot: suspend (BatchProgress) -> Unit = {},
     acceptFailure: ((task: DownloadTask, error: Throwable) -> Boolean)? = null
 ) {
+    if (AllSettings.downloadWifiOnly.state && isUsingMobileData(GlobalContext)) {
+        throw DownloadFailedException("Wi-Fi only is enabled in download settings.")
+    }
     val verifyStarted = System.currentTimeMillis()
     val (reusable, pending) = verifyExistingFilesConcurrently(tasks)
     Logger.info(TAG, "Local file check done: reusable=${reusable.size} pending=${pending.size}, took=${System.currentTimeMillis() - verifyStarted}ms")

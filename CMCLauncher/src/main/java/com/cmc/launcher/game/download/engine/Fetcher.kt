@@ -409,6 +409,7 @@ object Fetcher {
                 resume?.addBytes(len.toLong())
                 written += len
                 onBytes(len.toLong())
+                DownloadThrottle.acquire(len.toLong())
             }
             if (Thread.currentThread().isInterrupted) throw InterruptedIOException("Cancelled")
 

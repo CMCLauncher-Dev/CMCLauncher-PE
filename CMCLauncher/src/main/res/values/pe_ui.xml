@@ -153,7 +153,15 @@
     <string name="pe_download_concurrency_title">Download</string>
     <string name="pe_download_concurrency_caption">Concurrency for segmented large-file downloads</string>
     <string name="pe_download_threads_title">Download threads</string>
-    <string name="pe_download_threads_summary">1 uses a single connection; 2–32 splits large files into parallel segments</string>
+<string name="pe_download_threads_summary">1 uses a single connection; 2–32 splits large files into parallel segments</string>
+    <string name="pe_download_connections_title">Concurrent files</string>
+    <string name="pe_download_connections_summary">How many files download at the same time</string>
+    <string name="pe_download_wifi_only_title">Wi-Fi only</string>
+    <string name="pe_download_wifi_only_summary">Pause downloads when using mobile data</string>
+    <string name="pe_download_speed_title">Speed limit</string>
+    <string name="pe_download_speed_summary">Shared limit for all downloads</string>
+    <string name="pe_download_speed_unlimited">Unlimited</string>
+
     <string name="mods_dependency_check">Check dependencies</string>
     <string name="mods_dependency_check_empty">No missing dependencies or duplicate mods found</string>
     <string name="mods_dependency_missing">Missing dependency: %1$s needs %2$s</string>

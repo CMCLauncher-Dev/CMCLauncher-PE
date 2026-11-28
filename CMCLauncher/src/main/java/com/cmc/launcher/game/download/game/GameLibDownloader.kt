@@ -1,6 +1,7 @@
 package com.cmc.launcher.game.download.game
 
 import com.cmc.launcher.R
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.coroutine.Task
 import com.cmc.launcher.game.version.download.BaseMinecraftDownloader
 import com.cmc.launcher.game.version.download.DEFAULT_DOWNLOAD_THREADS
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class GameLibDownloader(
     private val downloader: BaseMinecraftDownloader,
     private val gameJson: String,
-    private val maxDownloadThreads: Int = DEFAULT_DOWNLOAD_THREADS
+    private val maxDownloadThreads: Int = AllSettings.downloadConnections.state
 ) {
     private val allDownloadTasks = ConcurrentLinkedQueue<DownloadTask>()
 

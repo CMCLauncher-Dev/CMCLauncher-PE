@@ -185,6 +185,7 @@ internal object ParallelDownloader {
                             }
                             reported += read
                             onBytes(read.toLong())
+                            DownloadThrottle.acquire(read.toLong())
                         }
                         if (position != end + 1) {
                             throw IOException("Segment ended at $position, expected ${end + 1}")
