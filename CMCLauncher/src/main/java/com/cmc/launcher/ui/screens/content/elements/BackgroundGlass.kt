@@ -158,7 +158,7 @@ private class GlassNode(
             }
         }
 
-        drawRect(color = color, blendMode = BlendMode.SrcOver)
+        drawRect(color = color.copy(alpha = color.alpha.coerceAtMost(0.55f)), blendMode = BlendMode.SrcOver)
         drawRect(
             color = Color.White.copy(alpha = whiteOverlayAlpha(blur)),
             blendMode = BlendMode.Softlight

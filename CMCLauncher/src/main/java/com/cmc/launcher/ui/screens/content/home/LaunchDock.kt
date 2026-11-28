@@ -28,6 +28,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
+import com.cmc.launcher.ui.theme.cardColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -74,10 +77,13 @@ internal fun LaunchDock(
             if (hasVersions) choosingVersion = true else install()
         }
     }
-    Surface(Modifier.fillMaxWidth(), shape = PanelShape, color = launcherPanelColor(),
+    Surface(Modifier.fillMaxWidth(), shape = PanelShape, color = androidx.compose.ui.graphics.Color.Transparent,
         border = BorderStroke(1.dp, colors.onSurface.copy(alpha = 0.09f))) {
-        Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(Space.sm)) {
+        Column(Modifier.background(launcherPanelColor())
+            .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+            .padding(10.dp), verticalArrangement = Arrangement.spacedBy(Space.sm)) {
             Row(Modifier.fillMaxWidth().clip(FieldShape).background(launcherInsetColor())
+                .backgroundGlass(AllSettings.backgroundBlur.state, launcherInsetColor().copy(alpha = 0.4f))
                 .clickable(role = Role.Button, interactionSource = null, indication = com.cmc.launcher.ui.kit.ImmediateIndication, onClick = accounts)
                 .heightIn(min = 54.dp).padding(horizontal = Space.md, vertical = Space.sm),
                 horizontalArrangement = Arrangement.spacedBy(Space.md), verticalAlignment = Alignment.CenterVertically) {

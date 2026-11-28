@@ -51,6 +51,9 @@ import com.cmc.launcher.ui.screens.content.home.version.LocalHomeCardVersionSett
 import com.cmc.launcher.ui.theme.CardShape
 import com.cmc.launcher.ui.theme.FieldShape
 import com.cmc.launcher.ui.theme.Space
+import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
+import com.cmc.launcher.ui.theme.cardColor
 import com.cmc.launcher.ui.theme.launcherPanelColor
 import com.cmc.launcher.viewmodel.ScreenBackStackViewModel
 import com.movtery.cardgrid.state.rememberCardGridState
@@ -136,9 +139,11 @@ private fun HomeShortcuts(versions: () -> Unit, download: () -> Unit) {
 @Composable
 private fun HomeShortcut(title: String, icon: Int, open: () -> Unit, modifier: Modifier) {
     val colors = MaterialTheme.colorScheme
-    Surface(modifier, shape = CardShape, color = launcherPanelColor(),
+    Surface(modifier, shape = CardShape, color = androidx.compose.ui.graphics.Color.Transparent,
         border = BorderStroke(1.dp, colors.onSurface.copy(alpha = 0.09f))) {
         Column(Modifier.fillMaxWidth().clip(CardShape)
+            .background(launcherPanelColor())
+            .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
             .clickable(role = Role.Button, interactionSource = null, indication = com.cmc.launcher.ui.kit.ImmediateIndication, onClick = open)
             .heightIn(min = 96.dp).padding(Space.md), verticalArrangement = Arrangement.spacedBy(Space.sm)) {
             Box(Modifier.size(36.dp).clip(FieldShape).background(colors.primaryContainer), contentAlignment = Alignment.Center) {
@@ -151,9 +156,12 @@ private fun HomeShortcut(title: String, icon: Int, open: () -> Unit, modifier: M
 
 @Composable
 private fun EmptyHomeCards() {
-    Surface(Modifier.fillMaxWidth(), shape = CardShape, color = launcherPanelColor(),
+    Surface(Modifier.fillMaxWidth(), shape = CardShape, color = androidx.compose.ui.graphics.Color.Transparent,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.09f))) {
-        Row(Modifier.fillMaxWidth().padding(Space.lg), horizontalArrangement = Arrangement.spacedBy(Space.md),
+        Row(Modifier.fillMaxWidth()
+            .background(launcherPanelColor())
+            .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+            .padding(Space.lg), horizontalArrangement = Arrangement.spacedBy(Space.md),
             verticalAlignment = Alignment.CenterVertically) {
             Icon(painterResource(R.drawable.ic_dashboard_outlined), null, Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.primary)
