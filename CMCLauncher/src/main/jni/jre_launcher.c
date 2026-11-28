@@ -37,13 +37,14 @@
 #include "utils.h"
 #include "environ/environ.h"
 
-// Uncomment to try redirect signal handling to JVM
+// 取消注释可将信号处理重定向到 JVM
 // #define TRY_SIG2JVM
 
-// PojavLancher: fixme: are these wrong?
+// PojavLauncher: fixme: 这些版本号是否正确？
 #define FULL_VERSION "1.8.0-internal"
 #define DOT_VERSION "1.8"
 
+// 传递给 JLI_Launch 的固定参数（程序名、启动器名等）
 static const char* const_progname = "java";
 static const char* const_launcher = "openjdk";
 static const char** const_jargs = NULL;
@@ -52,6 +53,7 @@ static const jboolean const_javaw = JNI_FALSE;
 static const jboolean const_cpwildcard = JNI_TRUE;
 static const jint const_ergo_class = 0; // DEFAULT_POLICY
 
+// JLI_Launch 函数指针类型定义（JDK 启动器接口）
 typedef jint JLI_Launch_func(int argc, char ** argv, /* main argc, argc */
         int jargc, const char** jargv,          /* java args */
         int appclassc, const char** appclassv,  /* app classpath */
@@ -65,13 +67,15 @@ typedef jint JLI_Launch_func(int argc, char ** argv, /* main argc, argc */
         jint ergo                               /* ergonomics class policy */
 );
 
+// SIGABRT 信号等待器数据：用于在 JVM 崩溃时捕获 abort 信号
 struct {
-    sigset_t tracked_sigset;
-    int pipe[2];
+    sigset_t tracked_sigset;  // 被跟踪的信号集
+    int pipe[2];              // 信号处理线程与等待线程之间的管道
 } abort_waiter_data;
 
 _Noreturn extern void nominal_exit(int code, bool is_signal);
 
+// 信号等待线程：阻塞等待管道中的信号，收到后调用 nominal_exit 退出
 _Noreturn static void* abort_waiter_thread(void* extraArg) {
     pthread_sigmask(SIG_BLOCK, &abort_waiter_data.tracked_sigset, NULL);
     int signal;
@@ -79,11 +83,13 @@ _Noreturn static void* abort_waiter_thread(void* extraArg) {
     nominal_exit(signal, true);
 }
 
+// 信号处理函数：将信号写入管道，然后死循环等待等待线程处理
 _Noreturn static void abort_waiter_handler(int signal) {
     write(abort_waiter_data.pipe[1], &signal, sizeof(int));
     while(1) {}
 }
 
+// 设置 SIGABRT 信号捕获：创建管道和等待线程，注册信号处理函数
 static void abort_waiter_setup() {
     const static int tracked_signals[] = {SIGABRT};
     const static int ntracked = (sizeof(tracked_signals) / sizeof(tracked_signals[0]));
@@ -120,11 +126,13 @@ static void abort_waiter_setup() {
     }
 }
 
+// 启动 JVM：加载 libjli.so，重置信号处理，调用 JLI_Launch
 static jint launchJVM(int margc, char** margv) {
    void* libjli = dlopen("libjli.so", RTLD_LAZY | RTLD_GLOBAL);
    struct sigaction clean_sa;
    memset(&clean_sa, 0, sizeof (struct sigaction));
 
+   // 重置所有信号处理为默认值（SIGSEGV 设为忽略，避免 JVM 崩溃时直接终止）
    for (int sigid = SIGHUP; sigid < NSIG; sigid++)
    {
        if (sigid == SIGSEGV)
@@ -168,10 +176,11 @@ static jint launchJVM(int margc, char** margv) {
 
 }
 
+// JNI 入口：Java 层调用此方法启动 JVM（用于在 Android 上运行 Minecraft）
 JNIEXPORT jint JNICALL Java_com_oracle_dalvik_VMLauncher_launchJVM(JNIEnv *env, jclass clazz, jobjectArray argsArray) {
     jint res = 0;
 
-    // Save dalvik JNIEnv pointer for JVM launch thread
+    // 保存 Dalvik 的 JNIEnv 指针，供 JVM 启动线程使用
     pojav_environ->dalvikJNIEnvPtr_ANDROID = env;
 
     if (argsArray == NULL)

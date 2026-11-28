@@ -1,6 +1,25 @@
-//
-// Created by maks on 06.01.2025.
-//
+/**
+ * @file lwjgl_dlopen_hook.c
+ * @brief LWJGL dlopen 钩子：拦截 LWJGL 的动态库加载
+ *
+ * 通过 RegisterNatives 替换 LWJGL 的 org.lwjgl.system.linux.DynamicLinkLoader.ndlopen
+ * native 方法，实现以下功能：
+ *
+ * 1. Vulkan 加载重定向：
+ *    拦截 libvulkan.so 的加载请求，改用启动器自定义的 Vulkan 驱动加载逻辑
+ *    （maybe_load_vulkan），将 Vulkan 句柄重定向到私有命名空间中的加载器副本。
+ *
+ * 2. Android 10 及更早版本的 linker 命名空间 bug 缓解：
+ *    Android 10 及更早版本的 linker 不支持命名空间嵌套。
+ *    大多数库位于 launcher 路径下，加载没有问题。但当 VulkanMod 等模组
+ *    尝试通过此方法加载默认 jni libs 目录之外的库（如 shaderc）时，
+ *    由于路径不在匿名命名空间的允许路径中，加载会失败。
+ *    此钩子位于 libpojavexec 中，属于 classloader 命名空间，
+ *    因此可以成功加载这些库。
+ *
+ * Reference:
+ * - ndlopen 原始实现: https://github.com/PojavLauncherTeam/lwjgl3/blob/3.3.1/modules/lwjgl/core/src/generated/c/linux/org_lwjgl_system_linux_DynamicLinkLoader.c#L11
+ */
 
 #include <android/api-level.h>
 #include <android/log.h>
@@ -12,12 +31,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+// 自定义 Vulkan 加载函数（定义于 vulkan_checker.c）
 extern void* maybe_load_vulkan();
 
 /**
- * Basically a verbatim implementation of ndlopen(), found at
- * https://github.com/PojavLauncherTeam/lwjgl3/blob/3.3.1/modules/lwjgl/core/src/generated/c/linux/org_lwjgl_system_linux_DynamicLinkLoader.c#L11
- * but with our own additions for stuff like vulkanmod.
+ * ndlopen 的替代实现：
+ * - 拦截 libvulkan.so 的加载，改用自定义 Vulkan 驱动
+ * - 通过 libpojavexec 的 classloader 命名空间加载库，缓解 linker 命名空间 bug
  */
 static jlong ndlopen_bugfix(__attribute__((unused)) JNIEnv *env,
                             __attribute__((unused)) jclass class,
@@ -25,25 +45,22 @@ static jlong ndlopen_bugfix(__attribute__((unused)) JNIEnv *env,
                             jint jmode) {
     const char* filename = (const char*) filename_ptr;
 
-    // Oveeride vulkan loading to let us load vulkan ourselves
+    // 拦截 libvulkan.so 的加载，改用自定义 Vulkan 驱动
     if(strstr(filename, "libvulkan.so") == filename) {
         printf("LWJGL linkerhook: replacing load for libvulkan.so with custom driver\n");
         return (jlong) maybe_load_vulkan();
     }
 
-    // This hook also serves the task of mitigating a bug: the idea is that since, on Android 10 and
-    // earlier, the linker doesn't really do namespace nesting.
-    // It is not a problem as most of the libraries are in the launcher path, but when you try to run
-    // VulkanMod which loads shaderc outside of the default jni libs directory through this method,
-    // it can't load it because the path is not in the allowed paths for the anonymous namesapce.
-    // This method fixes the issue by being in libpojavexec, and thus being in the classloader namespace
-
+    // 通过 libpojavexec 的 classloader 命名空间加载库，
+    // 缓解 Android 10 及更早版本 linker 不支持命名空间嵌套的 bug
     int mode = (int)jmode;
     return (jlong) dlopen(filename, mode);
 }
 
 /**
- * Install the LWJGL dlopen hook. This allows us to mitigate linker bugs and add custom library overrides.
+ * 安装 LWJGL dlopen 钩子：
+ * 通过 RegisterNatives 替换 LWJGL 的 ndlopen native 方法，
+ * 实现 linker bug 缓解和自定义库加载重定向。
  */
 void installLwjglDlopenHook() {
     __android_log_print(ANDROID_LOG_INFO, "LwjglLinkerHook", "Installing LWJGL dlopen() hook");

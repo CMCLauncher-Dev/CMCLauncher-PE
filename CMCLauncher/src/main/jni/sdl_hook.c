@@ -1,4 +1,19 @@
-// Reference AAMC: https://github.com/AngelAuraMC/Amethyst-Android/blob/360d708262ff703d9b52782d20cd348410a33df5/app_pojavlauncher/src/main/jni/native_hooks/sdl_hook.c
+/**
+ * @file sdl_hook.c
+ * @brief SDL3 钩子：拦截 SDL 函数调用以实现 Android 平台适配
+ *
+ * 主要功能：
+ * - SDL_InitSubSystem 拦截：初始化 launcher 集成（JNI 环境、IME 设置等）
+ * - 主窗口复用：Android 单窗口约束下，将后续窗口创建请求重定向到首个窗口
+ * - EGL 兼容代理：归一化 RENDERABLE_TYPE、剔除 KHR 版本属性、CV=2 兜底
+ * - Vulkan 加载器一致性：SDL 侧改用启动器重定向的 Vulkan 加载器句柄
+ * - 事件窗口解析修正：事件解析失败时回落到之前成功解析的窗口
+ *
+ * 同时提供 bytehook 层（GOT 导入补丁）和 dlsym 层（符号解析代理）两套钩子，
+ * 分别拦截直接调用和经 dlopen+dlsym 解析后的调用。
+ *
+ * Reference AAMC: https://github.com/AngelAuraMC/Amethyst-Android/blob/360d708262ff703d9b52782d20cd348410a33df5/app_pojavlauncher/src/main/jni/native_hooks/sdl_hook.c
+ */
 
 #include <stdbool.h>
 #include <stdint.h>
