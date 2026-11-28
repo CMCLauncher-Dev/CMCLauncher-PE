@@ -9,6 +9,7 @@ class FileDownloader(
             urls = request.urls,
             targetFile = request.targetFile,
             sha1 = request.sha1,
+            expectedSize = request.expectedSize,
             onBytes = stats::addBytes
         )
 

@@ -157,6 +157,7 @@ object Fetcher {
         targetFile: File,
         sha1: String? = null,
         retry: Int = DEFAULT_RETRY,
+        expectedSize: Long = -1L,
         onBytes: (Long) -> Unit = {}
     ) {
         require(urls.isNotEmpty()) { "At least one URL is required" }
@@ -169,6 +170,15 @@ object Fetcher {
             } catch (e: Exception) {
                 failures += DownloadException(candidate, IOException("Invalid URL", e))
                 continue
+            }
+            try {
+                if (ParallelDownloader.tryDownload(url, targetFile, sha1, expectedSize, onBytes)) {
+                    return
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Logger.warning(TAG, "Parallel download failed, using single connection: $candidate", e)
             }
             try {
                 downloadCandidate(url, targetFile, sha1, retry, onBytes)
