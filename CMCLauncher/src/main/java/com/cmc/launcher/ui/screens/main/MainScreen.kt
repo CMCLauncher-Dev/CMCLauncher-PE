@@ -17,6 +17,7 @@ import com.cmc.launcher.ui.kit.CmcListAction
 import com.cmc.launcher.ui.theme.FieldShape
 import com.cmc.launcher.ui.theme.PillShape
 import com.cmc.launcher.ui.theme.launcherChromeColor
+import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -263,8 +264,10 @@ private fun TopBar(
     onBack: () -> Unit, onHome: () -> Unit, onFileManager: () -> Unit, onTasks: () -> Unit, onDownload: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
-    Surface(color = launcherChromeColor(), contentColor = MaterialTheme.colorScheme.onSurface) {
-        Column {
+    Surface(color = Color.Transparent, contentColor = MaterialTheme.colorScheme.onSurface) {
+        Column(
+            modifier = Modifier.backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+        ) {
             Row(Modifier.fillMaxWidth().statusBarsPadding().heightIn(min = 56.dp).padding(horizontal = Space.sm),
                 verticalAlignment = Alignment.CenterVertically) {
                 if (showBack) {
@@ -318,8 +321,10 @@ private fun TopBar(
 @Composable
 private fun BottomNav(destinations: List<NavDestination>) {
     val colors = MaterialTheme.colorScheme
-    Surface(color = launcherChromeColor(), contentColor = colors.onSurface) {
-        Column {
+    Surface(color = Color.Transparent, contentColor = colors.onSurface) {
+        Column(
+            modifier = Modifier.backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
+        ) {
             HorizontalDivider(color = colors.onSurface.copy(alpha = 0.08f))
             Row(Modifier.fillMaxWidth().navigationBarsPadding().selectableGroup()
                 .padding(horizontal = Space.sm, vertical = Space.xs), verticalAlignment = Alignment.CenterVertically) {
