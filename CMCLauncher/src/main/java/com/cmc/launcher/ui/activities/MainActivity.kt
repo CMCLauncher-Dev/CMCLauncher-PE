@@ -142,7 +142,9 @@ class MainActivity : BaseAppCompatActivity() {
 
         Renderers.init()
 
-        PluginLoader.loadAllPlugins(this, false)
+        lifecycleScope.launch(Dispatchers.IO) {
+            PluginLoader.loadAllPlugins(this@MainActivity, false)
+        }
         refreshData()
 
         fmEventRegistrar = FileManagerEventRegistrar(this, ::onFileManagerEvent).also { it.start() }

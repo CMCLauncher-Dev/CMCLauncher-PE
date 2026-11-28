@@ -1,6 +1,7 @@
 package com.cmc.launcher.game.path
 
 import android.content.Context
+import com.cmc.launcher.context.GlobalContext
 import com.cmc.launcher.database.AppDatabase
 import com.cmc.launcher.game.version.installed.VersionsManager
 import com.cmc.launcher.path.PathManager
@@ -42,13 +43,8 @@ object GamePathManager {
 
     fun getUserPath(): String = File(_currentPath.value).parentFile!!.absolutePath
 
-    private lateinit var database: AppDatabase
-    private lateinit var gamePathDao: GamePathDao
-
-    fun initialize(context: Context) {
-        database = AppDatabase.getInstance(context)
-        gamePathDao = database.gamePathDao()
-    }
+    private val database by lazy { AppDatabase.getInstance(GlobalContext) }
+    private val gamePathDao by lazy { database.gamePathDao() }
 
     fun reloadPath() {
         scope.launch {

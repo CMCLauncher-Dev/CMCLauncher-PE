@@ -4,6 +4,7 @@ import android.content.Context
 import com.cmc.launcher.R
 import com.cmc.launcher.coroutine.Task
 import com.cmc.launcher.coroutine.TaskSystem
+import com.cmc.launcher.context.GlobalContext
 import com.cmc.launcher.database.AppDatabase
 import com.cmc.launcher.game.account.auth_server.data.AuthServer
 import com.cmc.launcher.game.account.auth_server.data.AuthServerDao
@@ -43,15 +44,9 @@ object AccountsManager {
 
     private val sessionValidatedAccounts: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
-    private lateinit var database: AppDatabase
-    private lateinit var accountDao: AccountDao
-    private lateinit var authServerDao: AuthServerDao
-
-    fun initialize(context: Context) {
-        database = AppDatabase.getInstance(context)
-        accountDao = database.accountDao()
-        authServerDao = database.authServerDao()
-    }
+    private val database by lazy { AppDatabase.getInstance(GlobalContext) }
+    private val accountDao by lazy { database.accountDao() }
+    private val authServerDao by lazy { database.authServerDao() }
 
     fun reloadAccounts() {
         scope.launch {

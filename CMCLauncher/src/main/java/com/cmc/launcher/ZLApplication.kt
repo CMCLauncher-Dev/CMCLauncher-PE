@@ -17,8 +17,6 @@ import com.kyant.fishnet.Fishnet
 import com.cmc.launcher.context.GlobalContext
 import com.cmc.launcher.context.refreshContext
 import com.cmc.launcher.coroutine.TaskSystem
-import com.cmc.launcher.game.account.AccountsManager
-import com.cmc.launcher.game.path.GamePathManager
 import com.cmc.launcher.keepalive.TaskKeepAlive
 import com.cmc.launcher.path.IMAGE_LOADER_CLIENT
 import com.cmc.launcher.path.PathManager
@@ -31,6 +29,10 @@ import com.cmc.launcher.utils.network.TLSSecurity
 import com.cmc.launcher.utils.writeCrashFile
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import okio.Path.Companion.toOkioPath
 import kotlin.properties.Delegates
 
@@ -40,6 +42,8 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
         @JvmStatic
         var DEVICE_ARCHITECTURE by Delegates.notNull<Int>()
     }
+
+    private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
         GlobalContext = this
@@ -71,15 +75,12 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
         super.onCreate()
         com.cmc.launcher.ui.theme.installStaticMotion()
         runCatching {
-            Fishnet.init(this, PathManager.DIR_NATIVE_LOGS.absolutePath)
-
             MMKV.initialize(this)
             loadAllSettings(this)
             com.cmc.launcher.setting.enums.applyLanguage(com.cmc.launcher.setting.AllSettings.launcherLanguage.state)
 
             Logger.initialize(this)
 
-            initializeData()
             PathManager.DIR_FILES_PRIVATE = getDir("files", MODE_PRIVATE)
             DEVICE_ARCHITECTURE = Architecture.getDeviceArchitecture()
 
@@ -96,6 +97,8 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
             }
             showFatalError(this, launchTh)
         }
+
+        scheduleDeferredStartup()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -127,8 +130,13 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
             .build()
     }
 
-    private fun initializeData() {
-        AccountsManager.initialize(this)
-        GamePathManager.initialize(this)
+    private fun scheduleDeferredStartup() {
+        startupScope.launch {
+            runCatching {
+                Fishnet.init(this@ZLApplication, PathManager.DIR_NATIVE_LOGS.absolutePath)
+            }.onFailure { error ->
+                Logger.warning("Startup", "Deferred initialization failed", error)
+            }
+        }
     }
 }
