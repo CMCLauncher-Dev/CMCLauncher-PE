@@ -180,7 +180,7 @@
     <string name="pe_update_check_summary">使用目前選擇的通道</string>
     <string name="pe_update_check_failed">檢查更新失敗</string>
     <string name="pe_update_found">最新版本：%1$s</string>
-    <string name="pe_update_open">開啟</string>
+    <string name="pe_update_open">下載並安裝</string>
     <string name="pe_update_latest">已是最新版本</string>
     <string name="pe_update_downloading">正在下載更新…</string>
     <string name="pe_update_failed">更新下載失敗</string>
