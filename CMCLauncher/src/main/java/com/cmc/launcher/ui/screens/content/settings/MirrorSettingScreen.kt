@@ -364,7 +364,17 @@ private fun BackgroundSection() {
         if (uri != null && backgroundViewModel != null) {
             isBusy = true
             scope.launch {
-                runCatching { backgroundViewModel.import(context, uri) }
+                val imported = runCatching { backgroundViewModel.import(context, uri) }.getOrDefault(false)
+                if (imported && AllSettings.launcherBackgroundOpacity.state >= 100) {
+                    AllSettings.launcherBackgroundOpacity.save(80)
+                }
+                if (!imported) {
+                    android.widget.Toast.makeText(
+                        context,
+                        R.string.pe_background_import_failed,
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                }
                 isBusy = false
             }
         }

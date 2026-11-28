@@ -73,16 +73,21 @@ class BackgroundViewModel: ViewModel() {
         }
     }
 
-    suspend fun import(context: Context, result: Uri) {
-        withContext(Dispatchers.IO) {
+    suspend fun import(context: Context, result: Uri): Boolean {
+        return withContext(Dispatchers.IO) {
             FileUtils.deleteQuietly(backgroundFile)
-            context.copyLocalFile(result, backgroundFile)
-            if (!backgroundFile.isImageFile() && !backgroundFile.isVideoFile()) {
-
+            runCatching {
+                context.copyLocalFile(result, backgroundFile)
+            }.onFailure {
                 FileUtils.deleteQuietly(backgroundFile)
-                error("The selected file is not an image or a video!")
+                return@withContext false
+            }
+            if (!backgroundFile.isImageFile() && !backgroundFile.isVideoFile()) {
+                FileUtils.deleteQuietly(backgroundFile)
+                return@withContext false
             }
             updateState()
+            true
         }
     }
 }

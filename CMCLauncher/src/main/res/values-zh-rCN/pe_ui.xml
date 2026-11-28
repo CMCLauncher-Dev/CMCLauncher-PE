@@ -86,6 +86,7 @@
     <string name="pe_blur_strength_summary">调高后玻璃背后的内容更朦胧</string>
     <string name="pe_bg_opacity_title">背景不透明度</string>
     <string name="pe_bg_opacity_summary">调低可让文字与卡片更突出</string>
+    <string name="pe_background_import_failed">无法读取该文件，请选择图片或视频</string>
     <string name="pe_settings_applied">设置即时生效</string>
     <string name="pe_transfer_receive_title">接收实例</string>
     <string name="pe_transfer_receive_hint">将两台设备接入同一局域网或 Wi-Fi 热点。在发送端打开「工具箱 → 实例迁移」（PC 版名为「转移实例」），选择一个实例并开始发送。选择扫描结果或输入发送端地址。</string>

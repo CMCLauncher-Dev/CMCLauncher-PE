@@ -86,6 +86,7 @@
     <string name="pe_blur_strength_summary">Higher values make content behind the glass more diffuse</string>
     <string name="pe_bg_opacity_title">Background opacity</string>
     <string name="pe_bg_opacity_summary">Lower values make text and cards stand out more</string>
+    <string name="pe_background_import_failed">Unable to read this file. Choose an image or video.</string>
     <string name="pe_settings_applied">Settings apply immediately</string>
     <string name="pe_transfer_receive_title">Receive instance</string>
     <string name="pe_transfer_receive_hint">Connect both devices to the same LAN or Wi-Fi hotspot. On the sending device, open Toolbox → Instance transfer and start sending one instance. Select a discovered sender or enter its address.</string>

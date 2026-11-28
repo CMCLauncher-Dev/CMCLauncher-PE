@@ -543,6 +543,11 @@ fun Background(
     modifier: Modifier = Modifier,
     allowVideo: Boolean = true
 ) {
+    LaunchedEffect(viewModel.isValid) {
+        if (viewModel.isValid && AllSettings.launcherBackgroundOpacity.state >= 100) {
+            AllSettings.launcherBackgroundOpacity.save(80)
+        }
+    }
     Box(modifier) {
         if (viewModel.isValid && (viewModel.isImage || viewModel.isVideo && allowVideo)) {
             com.cmc.launcher.ui.components.StaticBackground(
