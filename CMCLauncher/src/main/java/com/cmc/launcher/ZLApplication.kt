@@ -46,11 +46,18 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
+        val startupClock = android.os.SystemClock.elapsedRealtime()
+        fun mark(label: String) {
+            android.util.Log.i("StartupTiming", label + "=" + (android.os.SystemClock.elapsedRealtime() - startupClock))
+        }
         GlobalContext = this
         TLSSecurity.install()
+        mark("tls")
         refreshContext(this)
+        mark("context")
 
         TaskKeepAlive.initialize(this)
+        mark("keepalive")
 
         Thread.setDefaultUncaughtExceptionHandler { _, th ->
 
@@ -73,16 +80,23 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
         }
 
         super.onCreate()
+        mark("super")
         com.cmc.launcher.ui.theme.installStaticMotion()
+        mark("staticMotion")
         runCatching {
             MMKV.initialize(this)
+            mark("mmkv")
             loadAllSettings(this)
+            mark("settings")
             com.cmc.launcher.setting.enums.applyLanguage(com.cmc.launcher.setting.AllSettings.launcherLanguage.state)
+            mark("language")
 
             Logger.initialize(this)
+            mark("logger")
 
             PathManager.DIR_FILES_PRIVATE = getDir("files", MODE_PRIVATE)
             DEVICE_ARCHITECTURE = Architecture.getDeviceArchitecture()
+            mark("paths")
 
             if (Architecture.isx86Device() && Architecture.is32BitsDevice) {
                 val originalJNIDirectory = applicationInfo.nativeLibraryDir
@@ -99,6 +113,7 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
         }
 
         scheduleDeferredStartup()
+        mark("deferred")
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
