@@ -482,6 +482,13 @@ private fun DownloadSection() {
                 AllSettings.downloadSpeedLimitKbps.save(AllSettings.downloadSpeedLimitKbps.state)
             }
         )
+        CmcDivider(modifier = Modifier.padding(horizontal = Space.xs))
+        CmcSwitchRow(
+            title = stringResource(R.string.pe_download_cleanup_title),
+            summary = stringResource(R.string.pe_download_cleanup_summary),
+            checked = AllSettings.downloadCleanupAfterInstall.state,
+            onCheckedChange = { AllSettings.downloadCleanupAfterInstall.save(it) }
+        )
     }
 }
 

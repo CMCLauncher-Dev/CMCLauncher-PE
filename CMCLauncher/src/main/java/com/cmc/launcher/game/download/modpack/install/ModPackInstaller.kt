@@ -16,6 +16,7 @@ import com.cmc.launcher.game.version.installed.VersionConfig
 import com.cmc.launcher.game.version.installed.VersionFolders
 import com.cmc.launcher.game.version.installed.getVersionIconFile
 import com.cmc.launcher.path.PathManager
+import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.ui.androidText
 import com.cmc.launcher.utils.file.copyDirectoryContents
 import com.cmc.launcher.utils.logging.Logger
@@ -237,6 +238,7 @@ class ModPackInstaller(
     }
 
     private suspend fun clearTempModPackDir() = withContext(Dispatchers.IO) {
+        if (!AllSettings.downloadCleanupAfterInstall.state) return@withContext
         PathManager.DIR_CACHE_MODPACK_DOWNLOADER.takeIf { it.exists() }?.let { folder ->
             FileUtils.deleteQuietly(folder)
             Logger.info(TAG, "Temporary modpack directory cleared.")

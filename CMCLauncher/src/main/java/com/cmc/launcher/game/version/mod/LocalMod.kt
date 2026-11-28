@@ -38,6 +38,7 @@ class LocalMod(
     val notMod: Boolean = false,
     val checkRemote: Boolean = true,
     val dependencies: Map<String, String> = emptyMap(),
+    val unlessDependencies: Map<String, String> = emptyMap(),
 ) {
     var file by mutableStateOf(modFile)
         private set

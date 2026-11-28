@@ -107,6 +107,8 @@ object ForgeNewModMetadataReader : ModMetadataReader {
             val id = Regex("""modId\s*=\s*"([^"]+)"""").find(body)?.groupValues?.get(1) ?: return@forEach
             val mandatory = Regex("""mandatory\s*=\s*(true|false)""").find(body)?.groupValues?.get(1) != "false"
             if (!mandatory) return@forEach
+            val side = Regex("""side\s*=\s*"([^"]+)"""").find(body)?.groupValues?.get(1)
+            if (side.equals("SERVER", ignoreCase = true)) return@forEach
             val version = Regex("""versionRange\s*=\s*"([^"]*)"""").find(body)?.groupValues?.get(1).orEmpty()
             result[id] = version
         }

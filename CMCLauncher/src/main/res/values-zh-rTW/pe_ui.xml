@@ -161,11 +161,14 @@
     <string name="pe_download_speed_title">下載限速</string>
     <string name="pe_download_speed_summary">所有下載共用的限速</string>
     <string name="pe_download_speed_unlimited">不限速</string>
+    <string name="pe_download_cleanup_title">安裝後清理</string>
+    <string name="pe_download_cleanup_summary">安裝完成後刪除暫存安裝檔案</string>
 
     <string name="mods_dependency_check">檢查依賴</string>
     <string name="mods_dependency_check_empty">未發現缺少前置或重複模組</string>
     <string name="mods_dependency_missing">缺少前置：%1$s 需要 %2$s</string>
     <string name="mods_dependency_duplicate">重複模組：%1$s（%2$s）</string>
+    <string name="mods_dependency_version_mismatch">版本不符：%1$s 需要 %2$s %3$s</string>
     <string name="pe_settings_diagnostics">診斷</string>
     <string name="pe_settings_diagnostics_title">匯出診斷包</string>
     <string name="pe_settings_diagnostics_detail">最近的當機記錄、裝置資訊和啟動器日誌</string>
@@ -178,4 +181,7 @@
     <string name="pe_update_check_failed">檢查更新失敗</string>
     <string name="pe_update_found">最新版本：%1$s</string>
     <string name="pe_update_open">開啟</string>
+    <string name="pe_update_latest">已是最新版本</string>
+    <string name="pe_update_downloading">正在下載更新…</string>
+    <string name="pe_update_failed">更新下載失敗</string>
 </resources>

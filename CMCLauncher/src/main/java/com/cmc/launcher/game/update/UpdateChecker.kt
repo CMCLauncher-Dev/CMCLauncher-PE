@@ -7,13 +7,15 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.Instant
 
 data class UpdateRelease(
     val tag: String,
     val name: String,
     val pageUrl: String,
     val apkUrl: String?,
-    val prerelease: Boolean
+    val prerelease: Boolean,
+    val publishedAt: Long
 )
 
 object UpdateChecker {
@@ -57,7 +59,10 @@ object UpdateChecker {
             name = release.optString("name").ifBlank { release.optString("tag_name") },
             pageUrl = release.optString("html_url"),
             apkUrl = apkUrl,
-            prerelease = prerelease
+            prerelease = prerelease,
+            publishedAt = runCatching {
+                Instant.parse(release.optString("published_at")).toEpochMilli()
+            }.getOrDefault(0L)
         )
     }
 }

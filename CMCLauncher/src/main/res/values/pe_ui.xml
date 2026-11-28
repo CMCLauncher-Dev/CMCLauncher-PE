@@ -161,11 +161,14 @@
     <string name="pe_download_speed_title">Speed limit</string>
     <string name="pe_download_speed_summary">Shared limit for all downloads</string>
     <string name="pe_download_speed_unlimited">Unlimited</string>
+    <string name="pe_download_cleanup_title">Clean up after install</string>
+    <string name="pe_download_cleanup_summary">Remove temporary installer files when installation finishes</string>
 
     <string name="mods_dependency_check">Check dependencies</string>
     <string name="mods_dependency_check_empty">No missing dependencies or duplicate mods found</string>
     <string name="mods_dependency_missing">Missing dependency: %1$s needs %2$s</string>
     <string name="mods_dependency_duplicate">Duplicate mod: %1$s (%2$s)</string>
+    <string name="mods_dependency_version_mismatch">Version mismatch: %1$s needs %2$s %3$s</string>
     <string name="pe_settings_diagnostics">Diagnostics</string>
     <string name="pe_settings_diagnostics_title">Export diagnostic bundle</string>
     <string name="pe_settings_diagnostics_detail">Recent crash reports, device information and launcher logs</string>
@@ -178,4 +181,7 @@
     <string name="pe_update_check_failed">Unable to check for updates</string>
     <string name="pe_update_found">Latest release: %1$s</string>
     <string name="pe_update_open">Open</string>
+    <string name="pe_update_latest">Already up to date</string>
+    <string name="pe_update_downloading">Downloading update…</string>
+    <string name="pe_update_failed">Unable to download the update</string>
 </resources>

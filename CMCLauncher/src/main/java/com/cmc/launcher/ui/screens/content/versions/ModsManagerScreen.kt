@@ -190,6 +190,8 @@ private class ModsManageViewModel(
 
     var enabledCount by mutableIntStateOf(-1)
         private set
+    var issuePaths by mutableStateOf<Set<String>>(emptySet())
+        private set
 
     var disabledCount by mutableIntStateOf(-1)
         private set
@@ -230,6 +232,7 @@ private class ModsManageViewModel(
             if (checkCount) modsCount.checkDir()
             try {
                 allMods = modReader.readAllForRemote()
+                issuePaths = ModIssueChecker.check(allMods.map { it.localMod }).map { it.filePath }.toSet()
                 filterMods(context)
             } catch (_: CancellationException) {
 
@@ -663,6 +666,12 @@ fun ModsManagerScreen(
                                                             issue.modName,
                                                             issue.versions.ifBlank { issue.detail }
                                                         )
+                                                        ModIssueType.VERSION_MISMATCH -> stringResource(
+                                                            R.string.mods_dependency_version_mismatch,
+                                                            issue.modName,
+                                                            issue.detail,
+                                                            issue.versions
+                                                        )
                                                     }
                                                 )
                                             }
@@ -757,6 +766,7 @@ fun ModsManagerScreen(
                                     .weight(1f),
                                 hasModLoader = hasModLoader,
                                 modsList = viewModel.filteredMods,
+                                issuePaths = viewModel.issuePaths,
                                 selectedMods = viewModel.selectedMods,
                                 removeFromSelected = { mod ->
                                     viewModel.selectedMods.remove(mod)
@@ -819,6 +829,7 @@ private fun ModsList(
     modifier: Modifier = Modifier,
     hasModLoader: Boolean,
     modsList: List<RemoteMod>?,
+    issuePaths: Set<String>,
     selectedMods: List<RemoteMod>,
     removeFromSelected: (RemoteMod) -> Unit,
     addToSelected: (RemoteMod) -> Unit,
@@ -887,6 +898,7 @@ private fun ModsList(
                     onDelete = {
                         onDelete(mod)
                     },
+                    hasIssue = mod.localMod.file.absolutePath in issuePaths,
                     selected = selectedMods.contains(mod)
                 )
             }
@@ -917,7 +929,8 @@ private fun ModItemLayout(
     onEnable: () -> Unit,
     onDisable: () -> Unit,
     onSwapMoreInfo: (String, Platform) -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    hasIssue: Boolean
 ) {
     val context = LocalContext.current
     val local = mod.localMod
@@ -958,9 +971,22 @@ private fun ModItemLayout(
                         }
                     }
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Space.xxs)) {
-                        Text(title, style = MaterialTheme.typography.titleSmall, maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            color = if (active) colors.onSurface else colors.onSurfaceVariant)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(Space.xxs),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (hasIssue) {
+                                Icon(
+                                    modifier = Modifier.size(16.dp),
+                                    painter = painterResource(R.drawable.ic_warning_outlined),
+                                    contentDescription = null,
+                                    tint = colors.error
+                                )
+                            }
+                            Text(title, style = MaterialTheme.typography.titleSmall, maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                color = if (active) colors.onSurface else colors.onSurfaceVariant)
+                        }
                         if (title != local.file.name) {
                             Text(local.file.name, style = MaterialTheme.typography.bodySmall, maxLines = 1,
                                 overflow = TextOverflow.Ellipsis, color = colors.onSurfaceVariant)

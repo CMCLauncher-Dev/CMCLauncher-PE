@@ -48,7 +48,8 @@ object QuiltModMetadataReader : ModMetadataReader {
                             version = quiltLoader.version,
                             authors = contributors,
                             icon = icon,
-                            dependencies = dependencyMap(quiltLoader)
+                            dependencies = dependencyMap(quiltLoader),
+                            unlessDependencies = unlessMap(quiltLoader)
                         )
                     }
                 } catch (e: Exception) {
@@ -94,7 +95,8 @@ object QuiltModMetadataReader : ModMetadataReader {
                     version = quiltLoader.version,
                     authors = contributors,
                     icon = icon,
-                    dependencies = dependencyMap(quiltLoader)
+                    dependencies = dependencyMap(quiltLoader),
+                    unlessDependencies = unlessMap(quiltLoader)
                 )
             }
         }
@@ -102,8 +104,19 @@ object QuiltModMetadataReader : ModMetadataReader {
 
     private fun dependencyMap(loader: QuiltModMetadata.QuiltLoader): Map<String, String> {
         return loader.depends
-            ?.filter { it.optional != true && it.unless == null }
+            ?.filter { it.optional != true }
             ?.associate { it.id to "" }
+            ?: emptyMap()
+    }
+
+    private fun unlessMap(loader: QuiltModMetadata.QuiltLoader): Map<String, String> {
+        return loader.depends
+            ?.filter { it.unless != null }
+            ?.mapNotNull { dependency ->
+                val unlessId = dependency.unless?.get("id")?.asString ?: return@mapNotNull null
+                dependency.id to unlessId
+            }
+            ?.toMap()
             ?: emptyMap()
     }
 

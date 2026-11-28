@@ -22,6 +22,9 @@ import androidx.navigation3.runtime.entryProvider
 import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.FileProvider
+import com.cmc.launcher.game.download.engine.DownloadEngine
+import com.cmc.launcher.game.download.engine.DownloadRequest
 import com.cmc.launcher.game.update.UpdateChecker
 import com.cmc.launcher.game.update.UpdateRelease
 import com.cmc.launcher.setting.enums.UpdateChannel
@@ -29,6 +32,7 @@ import com.cmc.launcher.ui.components.SimpleAlertDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import androidx.compose.runtime.rememberCoroutineScope
 import com.cmc.launcher.R
 import com.cmc.launcher.game.version.installed.VersionsManager
@@ -105,9 +109,36 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
                     if (release.prerelease) "\n" + stringResource(R.string.pe_update_channel_beta) else "",
             confirmText = stringResource(R.string.pe_update_open),
             onConfirm = {
-                val target = release.apkUrl ?: release.pageUrl
-                runCatching {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                val url = release.apkUrl
+                if (url == null) {
+                    runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(release.pageUrl)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }
+                } else {
+                    Toast.makeText(context, R.string.pe_update_downloading, Toast.LENGTH_SHORT).show()
+                    scope.launch {
+                        val file = runCatching {
+                            withContext(Dispatchers.IO) {
+                                val target = File(context.cacheDir, "update-${release.tag}.apk")
+                                DownloadEngine.download(DownloadRequest(listOf(url), target))
+                                target
+                            }
+                        }.getOrNull()
+                        if (file != null && file.length() > 0) {
+                            runCatching {
+                                val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW)
+                                        .setDataAndType(uri, "application/vnd.android.package-archive")
+                                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                )
+                            }.onFailure {
+                                Toast.makeText(context, R.string.pe_update_failed, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(context, R.string.pe_update_failed, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 updateRelease = null
             },
@@ -222,7 +253,14 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
                             scope.launch {
                                 val release = withContext(Dispatchers.IO) { UpdateChecker.latest(channel) }
                                 if (release != null) {
-                                    updateRelease = release
+                                    val installedAt = runCatching {
+                                        context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+                                    }.getOrDefault(0L)
+                                    if (release.publishedAt > installedAt) {
+                                        updateRelease = release
+                                    } else {
+                                        Toast.makeText(context, R.string.pe_update_latest, Toast.LENGTH_SHORT).show()
+                                    }
                                 } else {
                                     Toast.makeText(context, R.string.pe_update_check_failed, Toast.LENGTH_SHORT).show()
                                 }

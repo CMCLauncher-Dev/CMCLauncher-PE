@@ -2,6 +2,7 @@ package com.cmc.launcher.game.version.mod
 
 enum class ModIssueType {
     MISSING_DEPENDENCY,
+    VERSION_MISMATCH,
     DUPLICATE_ID
 }
 
@@ -9,7 +10,8 @@ data class ModIssue(
     val type: ModIssueType,
     val modName: String,
     val detail: String,
-    val versions: String = ""
+    val versions: String = "",
+    val filePath: String = ""
 )
 
 object ModIssueChecker {
@@ -35,7 +37,8 @@ object ModIssueChecker {
                     type = ModIssueType.DUPLICATE_ID,
                     modName = group.first().name,
                     detail = id,
-                    versions = group.mapNotNull { it.version }.distinct().joinToString(" / ")
+                    versions = group.mapNotNull { it.version }.distinct().joinToString(" / "),
+                    filePath = group.first().file.absolutePath
                 )
             }
         }
@@ -43,13 +46,25 @@ object ModIssueChecker {
         enabled.forEach { mod ->
             mod.dependencies.forEach { (dependency, version) ->
                 if (dependency in platformIds) return@forEach
-                if (byId.containsKey(dependency)) return@forEach
-                issues += ModIssue(
-                    type = ModIssueType.MISSING_DEPENDENCY,
-                    modName = mod.name,
-                    detail = dependency,
-                    versions = version
-                )
+                if (mod.unlessDependencies[dependency]?.let { byId.containsKey(it) } == true) return@forEach
+                val installed = byId[dependency]?.firstOrNull()
+                if (installed == null) {
+                    issues += ModIssue(
+                        type = ModIssueType.MISSING_DEPENDENCY,
+                        modName = mod.name,
+                        detail = dependency,
+                        versions = version,
+                        filePath = mod.file.absolutePath
+                    )
+                } else if (version.isNotBlank() && !ModVersionRange.matches(installed.version, version)) {
+                    issues += ModIssue(
+                        type = ModIssueType.VERSION_MISMATCH,
+                        modName = mod.name,
+                        detail = dependency,
+                        versions = (installed.version ?: "?") + " / " + version,
+                        filePath = mod.file.absolutePath
+                    )
+                }
             }
         }
 

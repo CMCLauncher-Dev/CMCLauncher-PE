@@ -19,6 +19,12 @@ object CrashReporter {
 
     private const val MAX_REPORTS = 5
 
+    private const val MAX_ENTRY_BYTES = 2 * 1024 * 1024
+
+    private val sensitiveLine = Regex(
+        "(?i)(access[_-]?token|refresh[_-]?token|authorization|password|secret|session)\\s*[=:]"
+    )
+
     private val timeFormat = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.ROOT)
 
     fun directory(context: Context): File {
@@ -49,15 +55,11 @@ object CrashReporter {
 
                 val reports = directory(context).listFiles()?.sortedByDescending { it.lastModified() }.orEmpty()
                 reports.take(MAX_REPORTS).forEach { report ->
-                    zip.putNextEntry(ZipEntry("crash_reports/${report.name}"))
-                    report.inputStream().use { it.copyTo(zip) }
-                    zip.closeEntry()
+                    writeSanitized(zip, "crash_reports/${report.name}", report)
                 }
 
                 if (PathManager.FILE_CRASH_REPORT.isFile) {
-                    zip.putNextEntry(ZipEntry("launcher_crash.log"))
-                    PathManager.FILE_CRASH_REPORT.inputStream().use { it.copyTo(zip) }
-                    zip.closeEntry()
+                    writeSanitized(zip, "launcher_crash.log", PathManager.FILE_CRASH_REPORT)
                 }
 
                 PathManager.DIR_LAUNCHER_LOGS.listFiles()
@@ -65,9 +67,7 @@ object CrashReporter {
                     ?.sortedByDescending { it.lastModified() }
                     ?.take(3)
                     ?.forEach { log ->
-                        zip.putNextEntry(ZipEntry("logs/${log.name}"))
-                        log.inputStream().use { it.copyTo(zip) }
-                        zip.closeEntry()
+                        writeSanitized(zip, "logs/${log.name}", log)
                     }
             }
             output
@@ -107,6 +107,21 @@ object CrashReporter {
                 appendLine("totalStorageMb=" + storage.totalBytes / 1024 / 1024)
             }
         }
+    }
+
+    private fun writeSanitized(zip: ZipOutputStream, entry: String, file: File) {
+        zip.putNextEntry(ZipEntry(entry))
+        var written = 0
+        file.bufferedReader().useLines { lines ->
+            for (line in lines) {
+                if (sensitiveLine.containsMatchIn(line)) continue
+                val bytes = (line + "\n").toByteArray()
+                if (written + bytes.size > MAX_ENTRY_BYTES) break
+                zip.write(bytes)
+                written += bytes.size
+            }
+        }
+        zip.closeEntry()
     }
 
     private fun trim(dir: File) {

@@ -93,6 +93,8 @@ object AllSettings : SettingsRegistry() {
 
     val updateChannel = enumSetting("updateChannel", UpdateChannel.STABLE)
 
+    val downloadCleanupAfterInstall = boolSetting("downloadCleanupAfterInstall", true)
+
     val physicalMouseMode = boolSetting("physicalMouseMode", true)
 
     val physicalKeyImeCode = intSetting("physicalKeyImeCode", null)
