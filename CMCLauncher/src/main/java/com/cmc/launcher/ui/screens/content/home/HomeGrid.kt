@@ -49,8 +49,10 @@ import com.movtery.cardgrid.state.CardSeed
 import com.movtery.cardgrid.ui.CardGrid
 import com.movtery.cardgrid.ui.CardGridAutoScroll
 import com.cmc.launcher.R
+import androidx.compose.ui.graphics.Color
 import com.cmc.launcher.setting.AllSettings
 import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
+import com.cmc.launcher.viewmodel.LocalBackgroundViewModel
 import com.cmc.launcher.ui.screens.content.home.server.ServerCardManager
 import com.cmc.launcher.ui.screens.content.home.server.ServerCardSettingsHost
 import com.cmc.launcher.ui.screens.content.home.version.VersionCardManager
@@ -199,8 +201,18 @@ fun HomeGrid(
 
             CardGrid(
                 state = state,
-                containerColor = com.cmc.launcher.ui.theme.launcherPanelColor(),
-                contentColor = MaterialTheme.colorScheme.onSurface
+                containerColor = if (LocalBackgroundViewModel.current?.isValid == true) {
+                    Color.Transparent
+                } else {
+                    com.cmc.launcher.ui.theme.launcherPanelColor()
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                cardBackground = { cardModifier ->
+                    cardModifier.backgroundGlass(
+                        AllSettings.backgroundBlur.state,
+                        com.cmc.launcher.ui.theme.cardColor()
+                    )
+                }
             )
         }
         CardGridAutoScroll(

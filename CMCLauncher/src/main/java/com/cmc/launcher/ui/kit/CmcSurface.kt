@@ -29,6 +29,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.cmc.launcher.setting.AllSettings
+import com.cmc.launcher.ui.screens.content.elements.backgroundGlass
+import com.cmc.launcher.ui.theme.cardColor
 import com.cmc.launcher.ui.theme.Alpha
 import com.cmc.launcher.ui.theme.CardShape
 import com.cmc.launcher.ui.theme.PanelShape
@@ -55,7 +58,10 @@ fun CmcPanel(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(if (tonal) surfaceColor(true) else MaterialTheme.colorScheme.surfaceContainerLowest)
+            .backgroundGlass(
+                AllSettings.backgroundBlur.state,
+                if (tonal) cardColor() else cardColor(false)
+            )
             .border(Size.stroke, hairlineColor(), shape)
             .padding(Space.cardInner),
         content = content
@@ -73,7 +79,7 @@ fun CmcCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(surfaceColor(true))
+            .backgroundGlass(AllSettings.backgroundBlur.state, cardColor())
             .border(Size.stroke, hairlineColor(), shape)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(Space.cardInner),
