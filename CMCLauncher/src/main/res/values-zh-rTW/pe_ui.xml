@@ -170,4 +170,12 @@
     <string name="pe_settings_diagnostics_title">匯出診斷包</string>
     <string name="pe_settings_diagnostics_detail">最近的當機記錄、裝置資訊和啟動器日誌</string>
     <string name="pe_diagnostics_export_failed">無法產生診斷包</string>
+    <string name="pe_settings_update">更新</string>
+    <string name="pe_update_channel_stable">穩定版</string>
+    <string name="pe_update_channel_beta">測試版</string>
+    <string name="pe_update_check">檢查更新</string>
+    <string name="pe_update_check_summary">使用目前選擇的通道</string>
+    <string name="pe_update_check_failed">檢查更新失敗</string>
+    <string name="pe_update_found">最新版本：%1$s</string>
+    <string name="pe_update_open">開啟</string>
 </resources>

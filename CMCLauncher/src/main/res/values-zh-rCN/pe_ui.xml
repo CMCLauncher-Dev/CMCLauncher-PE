@@ -170,4 +170,12 @@
     <string name="pe_settings_diagnostics_title">导出诊断包</string>
     <string name="pe_settings_diagnostics_detail">最近的崩溃记录、设备信息和启动器日志</string>
     <string name="pe_diagnostics_export_failed">无法生成诊断包</string>
+    <string name="pe_settings_update">更新</string>
+    <string name="pe_update_channel_stable">稳定版</string>
+    <string name="pe_update_channel_beta">测试版</string>
+    <string name="pe_update_check">检查更新</string>
+    <string name="pe_update_check_summary">使用当前选择的通道</string>
+    <string name="pe_update_check_failed">检查更新失败</string>
+    <string name="pe_update_found">最新版本：%1$s</string>
+    <string name="pe_update_open">打开</string>
 </resources>

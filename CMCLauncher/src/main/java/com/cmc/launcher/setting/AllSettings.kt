@@ -14,6 +14,7 @@ import com.cmc.launcher.setting.enums.ActionMenuSide
 import com.cmc.launcher.setting.enums.AppLanguage
 import com.cmc.launcher.setting.enums.BackgroundBlur
 import com.cmc.launcher.setting.enums.DarkMode
+import com.cmc.launcher.setting.enums.UpdateChannel
 import com.cmc.launcher.setting.enums.FpsDisplayMode
 import com.cmc.launcher.setting.enums.GamepadInputMode
 import com.cmc.launcher.setting.enums.GestureActionType
@@ -89,6 +90,8 @@ object AllSettings : SettingsRegistry() {
     val downloadWifiOnly = boolSetting("downloadWifiOnly", false)
 
     val downloadSpeedLimitKbps = intSetting("downloadSpeedLimitKbps", 0, 0..10240)
+
+    val updateChannel = enumSetting("updateChannel", UpdateChannel.STABLE)
 
     val physicalMouseMode = boolSetting("physicalMouseMode", true)
 

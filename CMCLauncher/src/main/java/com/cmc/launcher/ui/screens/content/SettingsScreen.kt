@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -19,6 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import android.widget.Toast
+import android.content.Intent
+import android.net.Uri
+import com.cmc.launcher.game.update.UpdateChecker
+import com.cmc.launcher.game.update.UpdateRelease
+import com.cmc.launcher.setting.enums.UpdateChannel
+import com.cmc.launcher.ui.components.SimpleAlertDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,8 +94,26 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
     var languageExpanded by rememberSaveable { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
     val language = AllSettings.launcherLanguage.state
+    val channel = AllSettings.updateChannel.state
+    var updateRelease by remember { mutableStateOf<UpdateRelease?>(null) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    updateRelease?.let { release ->
+        SimpleAlertDialog(
+            title = release.name,
+            text = stringResource(R.string.pe_update_found, release.tag) +
+                    if (release.prerelease) "\n" + stringResource(R.string.pe_update_channel_beta) else "",
+            confirmText = stringResource(R.string.pe_update_open),
+            onConfirm = {
+                val target = release.apkUrl ?: release.pageUrl
+                runCatching {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }
+                updateRelease = null
+            },
+            onDismiss = { updateRelease = null }
+        )
+    }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
@@ -177,9 +202,37 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
                     )
                 }
             }
+            item {
+                CmcSection(title = stringResource(R.string.pe_settings_update))
+                CmcPanel {
+                    UpdateChannel.entries.forEach { option ->
+                        CmcRadioRow(
+                            text = stringResource(option.textRes),
+                            selected = channel == option,
+                            onClick = { AllSettings.updateChannel.save(option) }
+                        )
+                    }
+                    CmcDivider()
+                    CmcListAction(
+                        title = stringResource(R.string.pe_update_check),
+                        summary = stringResource(R.string.pe_update_check_summary),
+                        iconRes = R.drawable.ic_autorenew,
+                        endIconRes = R.drawable.ic_arrow_right_rounded,
+                        onClick = {
+                            scope.launch {
+                                val release = withContext(Dispatchers.IO) { UpdateChecker.latest(channel) }
+                                if (release != null) {
+                                    updateRelease = release
+                                } else {
+                                    Toast.makeText(context, R.string.pe_update_check_failed, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
-
     if (showReceive) {
         val versions by VersionsManager.versions.collectAsStateWithLifecycle()
         ReceiveInstanceDialog(

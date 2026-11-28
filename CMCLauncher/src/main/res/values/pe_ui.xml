@@ -170,4 +170,12 @@
     <string name="pe_settings_diagnostics_title">Export diagnostic bundle</string>
     <string name="pe_settings_diagnostics_detail">Recent crash reports, device information and launcher logs</string>
     <string name="pe_diagnostics_export_failed">Unable to create the diagnostic bundle</string>
+    <string name="pe_settings_update">Updates</string>
+    <string name="pe_update_channel_stable">Stable</string>
+    <string name="pe_update_channel_beta">Beta</string>
+    <string name="pe_update_check">Check for updates</string>
+    <string name="pe_update_check_summary">Uses the selected channel</string>
+    <string name="pe_update_check_failed">Unable to check for updates</string>
+    <string name="pe_update_found">Latest release: %1$s</string>
+    <string name="pe_update_open">Open</string>
 </resources>
