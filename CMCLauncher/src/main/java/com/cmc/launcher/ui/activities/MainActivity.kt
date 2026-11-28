@@ -147,8 +147,6 @@ class MainActivity : BaseAppCompatActivity() {
         }
         refreshData()
 
-        fmEventRegistrar = FileManagerEventRegistrar(this, ::onFileManagerEvent).also { it.start() }
-
         NotificationManager.initManager(this)
 
         lifecycleScope.launch {
@@ -215,6 +213,7 @@ class MainActivity : BaseAppCompatActivity() {
                         ).show()
                     }
                     is EventViewModel.Event.OpenFileManager -> {
+                        ensureFileManagerEvents()
                         FileManagerLauncher.launch(
                             context = this@MainActivity,
                             rootPath = event.rootPath,
@@ -418,6 +417,11 @@ class MainActivity : BaseAppCompatActivity() {
         fmEventRegistrar?.stop()
         fmEventRegistrar = null
         super.onDestroy()
+    }
+
+    private fun ensureFileManagerEvents() {
+        if (fmEventRegistrar != null) return
+        fmEventRegistrar = FileManagerEventRegistrar(this, ::onFileManagerEvent).also { it.start() }
     }
 
     private fun onFileManagerEvent(event: FileManagerEvent) {

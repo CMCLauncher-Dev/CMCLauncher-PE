@@ -75,7 +75,7 @@ jobs:
       - name: Build arm64 Debug APK
         run: |
           chmod +x gradlew
-          ./gradlew :CardGrid:testDebugUnitTest :CMCLauncher:testDebugUnitTest :CMCLauncher:assembleDebug -Darch=arm64 --stacktrace --no-daemon
+          ./gradlew :CardGrid:testDebugUnitTest :CMCLauncher:testDebugUnitTest :CMCLauncher:assembleRelease -Darch=arm64 --stacktrace --no-daemon
 
       - name: Upload test results
         if: always()
@@ -90,7 +90,7 @@ jobs:
       - name: Upload raw APK
         uses: actions/upload-artifact@v7
         with:
-          path: CMCLauncher/build/outputs/apk/debug/*.apk
+          path: CMCLauncher/build/outputs/apk/release/*.apk
           archive: false
           retention-days: 10
           if-no-files-found: error
@@ -100,7 +100,7 @@ jobs:
           tag_name: latest
           fail_on_unmatched_files: true
           name: CMCLauncher latest
-          files: CMCLauncher/build/outputs/apk/debug/*.apk
+          files: CMCLauncher/build/outputs/apk/release/*.apk
 
       - name: Upload APK to RainS3
         env:
@@ -119,9 +119,9 @@ jobs:
             exit 0
           fi
           shopt -s nullglob
-          apks=(CMCLauncher/build/outputs/apk/debug/*.apk)
+          apks=(CMCLauncher/build/outputs/apk/release/*.apk)
           if (( ${#apks[@]} != 1 )); then
-            echo "::error::Expected one ARM64 Debug APK, found ${#apks[@]}."
+            echo "::error::Expected one ARM64 release APK, found ${#apks[@]}."
             exit 1
           fi
           # Keep each request small and serialize parts for RainS3 write throttling.
