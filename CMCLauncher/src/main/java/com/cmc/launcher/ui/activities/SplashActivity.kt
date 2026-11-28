@@ -65,15 +65,10 @@ class SplashActivity : BaseAppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashClock = android.os.SystemClock.elapsedRealtime()
-        fun splashMark(label: String) {
-            android.util.Log.i("StartupTiming", "splash_" + label + "=" + (android.os.SystemClock.elapsedRealtime() - splashClock))
-        }
         installSplashScreen().setOnExitAnimationListener { it.remove() }
         super.onCreate(savedInstanceState)
 
         initUnpackItems()
-        splashMark("items")
 
         setContent {
             CMCLauncherTheme {
@@ -90,7 +85,6 @@ class SplashActivity : BaseAppCompatActivity() {
                 }
             }
         }
-        splashMark("content")
         lifecycleScope.launch(Dispatchers.Main) {
             switchScreen(SplashOperation.Loading)
 
