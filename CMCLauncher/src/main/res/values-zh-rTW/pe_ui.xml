@@ -158,4 +158,8 @@
     <string name="mods_dependency_check_empty">未發現缺少前置或重複模組</string>
     <string name="mods_dependency_missing">缺少前置：%1$s 需要 %2$s</string>
     <string name="mods_dependency_duplicate">重複模組：%1$s（%2$s）</string>
+    <string name="pe_settings_diagnostics">診斷</string>
+    <string name="pe_settings_diagnostics_title">匯出診斷包</string>
+    <string name="pe_settings_diagnostics_detail">最近的當機記錄、裝置資訊和啟動器日誌</string>
+    <string name="pe_diagnostics_export_failed">無法產生診斷包</string>
 </resources>

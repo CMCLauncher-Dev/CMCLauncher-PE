@@ -13,10 +13,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
+import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.rememberCoroutineScope
 import com.cmc.launcher.R
 import com.cmc.launcher.game.version.installed.VersionsManager
 import com.cmc.launcher.setting.AllSettings
@@ -37,6 +43,8 @@ import com.cmc.launcher.ui.screens.content.transfer.ReceiveInstanceDialog
 import com.cmc.launcher.ui.screens.onBack
 import com.cmc.launcher.ui.screens.rememberTransitionSpec
 import com.cmc.launcher.ui.theme.Space
+import com.cmc.launcher.utils.CrashReporter
+import com.cmc.launcher.utils.file.shareFile
 import com.cmc.launcher.viewmodel.ErrorViewModel
 import com.cmc.launcher.viewmodel.EventViewModel
 import com.cmc.launcher.viewmodel.ScreenBackStackViewModel
@@ -79,6 +87,8 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
     var languageExpanded by rememberSaveable { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
     val language = AllSettings.launcherLanguage.state
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
@@ -141,6 +151,29 @@ private fun SettingsHome(onOpen: (NormalNavKey.Settings) -> Unit) {
                         iconRes = R.drawable.ic_java,
                         endIconRes = R.drawable.ic_arrow_right_rounded,
                         onClick = { onOpen(NormalNavKey.Settings.JavaManager) }
+                    )
+                }
+            }
+            item {
+                CmcSection(title = stringResource(R.string.pe_settings_diagnostics))
+                CmcPanel {
+                    CmcListAction(
+                        title = stringResource(R.string.pe_settings_diagnostics_title),
+                        summary = stringResource(R.string.pe_settings_diagnostics_detail),
+                        iconRes = R.drawable.ic_article_outlined,
+                        endIconRes = R.drawable.ic_arrow_right_rounded,
+                        onClick = {
+                            scope.launch {
+                                val file = withContext(Dispatchers.IO) { CrashReporter.createBundle(context) }
+                                if (file != null) {
+                                    shareFile(context, file) {
+                                        Toast.makeText(context, R.string.pe_diagnostics_export_failed, Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    Toast.makeText(context, R.string.pe_diagnostics_export_failed, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     )
                 }
             }

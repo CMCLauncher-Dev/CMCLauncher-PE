@@ -23,6 +23,7 @@ import com.cmc.launcher.path.PathManager
 import com.cmc.launcher.setting.loadAllSettings
 import com.cmc.launcher.ui.activities.showFatalError
 import com.cmc.launcher.ui.activities.showLauncherCrash
+import com.cmc.launcher.utils.CrashReporter
 import com.cmc.launcher.utils.device.Architecture
 import com.cmc.launcher.utils.logging.Logger
 import com.cmc.launcher.utils.network.TLSSecurity
@@ -60,6 +61,8 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
 
             Logger.error("Startup", "An exception occurred", throwable)
 
+            CrashReporter.record(this@ZLApplication, throwable)
+
             writeCrashFile(
                 file = PathManager.FILE_CRASH_REPORT,
                 throwable = throwable
@@ -88,6 +91,7 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
                 applicationInfo.nativeLibraryDir = originalJNIDirectory.take(originalJNIDirectory.lastIndexOf("/")) + "/x86"
             }
         }.onFailure { launchTh ->
+            CrashReporter.record(this, launchTh)
             writeCrashFile(
                 file = PathManager.FILE_CRASH_REPORT,
                 throwable = launchTh

@@ -158,4 +158,8 @@
     <string name="mods_dependency_check_empty">No missing dependencies or duplicate mods found</string>
     <string name="mods_dependency_missing">Missing dependency: %1$s needs %2$s</string>
     <string name="mods_dependency_duplicate">Duplicate mod: %1$s (%2$s)</string>
+    <string name="pe_settings_diagnostics">Diagnostics</string>
+    <string name="pe_settings_diagnostics_title">Export diagnostic bundle</string>
+    <string name="pe_settings_diagnostics_detail">Recent crash reports, device information and launcher logs</string>
+    <string name="pe_diagnostics_export_failed">Unable to create the diagnostic bundle</string>
 </resources>
