@@ -64,9 +64,9 @@ object ForgeNewModMetadataReader : ModMetadataReader {
         modFile: File
     ): LocalMod {
         val tomlEntry = zip.getEntry(tomlPath) ?: throw IOException("TOML file $tomlPath not found")
-
         zip.getInputStream(tomlEntry).bufferedReader().use { reader ->
-            val toml = Toml().read(reader.readText())
+            val tomlText = reader.readText()
+            val toml = Toml().read(tomlText)
             val tomlMap = toml.toMap() as MutableMap<String, Any?>
 
             fixAuthorsField(tomlMap)
@@ -84,7 +84,6 @@ object ForgeNewModMetadataReader : ModMetadataReader {
             val resolvedVersion = mod.version.replace("\${file.jarVersion}", jarVersion ?: "")
             val loaderType = analyzeLoader(toml, mod.modId, loaderACC, defaultLoader)
             val icon = zip.tryGetIcon(metadata.logoFile)
-
             return LocalMod(
                 modFile = modFile,
                 fileSize = FileUtils.sizeOf(modFile),
@@ -94,9 +93,24 @@ object ForgeNewModMetadataReader : ModMetadataReader {
                 description = mod.description,
                 version = resolvedVersion,
                 authors = mod.authors ?: emptyList(),
-                icon = icon
+                icon = icon,
+                dependencies = parseDependencies(tomlText)
             )
         }
+    }
+
+    private fun parseDependencies(tomlText: String): Map<String, String> {
+        val blocks = Regex("""\[\[dependencies\.[^\]]+]]\s*([\s\S]*?)(?=\[\[|\z)""").findAll(tomlText)
+        val result = linkedMapOf<String, String>()
+        blocks.forEach { match ->
+            val body = match.groupValues[1]
+            val id = Regex("""modId\s*=\s*"([^"]+)"""").find(body)?.groupValues?.get(1) ?: return@forEach
+            val mandatory = Regex("""mandatory\s*=\s*(true|false)""").find(body)?.groupValues?.get(1) != "false"
+            if (!mandatory) return@forEach
+            val version = Regex("""versionRange\s*=\s*"([^"]*)"""").find(body)?.groupValues?.get(1).orEmpty()
+            result[id] = version
+        }
+        return result
     }
 
     private fun readVersion(zip: JDKZipFile, modFile: File): String? {
@@ -150,9 +164,9 @@ object ForgeNewModMetadataReader : ModMetadataReader {
         modFile: File
     ): LocalMod {
         val tomlEntry = zip.getEntry(tomlPath) ?: throw IOException("TOML file $tomlPath not found")
-
         zip.getInputStream(tomlEntry).bufferedReader().use { reader ->
-            val toml = Toml().read(reader.readText())
+            val tomlText = reader.readText()
+            val toml = Toml().read(tomlText)
             val tomlMap = toml.toMap() as MutableMap<String, Any?>
 
             fixAuthorsField(tomlMap)
@@ -170,7 +184,6 @@ object ForgeNewModMetadataReader : ModMetadataReader {
             val resolvedVersion = mod.version.replace("\${file.jarVersion}", jarVersion ?: "")
             val loaderType = analyzeLoader(toml, mod.modId, loaderACC, defaultLoader)
             val icon = zip.tryGetIcon(metadata.logoFile)
-
             return LocalMod(
                 modFile = modFile,
                 fileSize = FileUtils.sizeOf(modFile),
@@ -180,7 +193,8 @@ object ForgeNewModMetadataReader : ModMetadataReader {
                 description = mod.description,
                 version = resolvedVersion,
                 authors = mod.authors ?: emptyList(),
-                icon = icon
+                icon = icon,
+                dependencies = parseDependencies(tomlText)
             )
         }
     }

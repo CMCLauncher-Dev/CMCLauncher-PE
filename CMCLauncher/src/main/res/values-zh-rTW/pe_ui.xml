@@ -154,4 +154,8 @@
     <string name="pe_download_concurrency_caption">大檔案分段下載的並行數</string>
     <string name="pe_download_threads_title">下載執行緒數</string>
     <string name="pe_download_threads_summary">1 使用單一連線，2–32 將大檔案分段並行下載</string>
+    <string name="mods_dependency_check">檢查依賴</string>
+    <string name="mods_dependency_check_empty">未發現缺少前置或重複模組</string>
+    <string name="mods_dependency_missing">缺少前置：%1$s 需要 %2$s</string>
+    <string name="mods_dependency_duplicate">重複模組：%1$s（%2$s）</string>
 </resources>

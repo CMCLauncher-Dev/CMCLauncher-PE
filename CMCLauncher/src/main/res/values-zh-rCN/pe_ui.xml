@@ -154,4 +154,8 @@
     <string name="pe_download_concurrency_caption">大文件分段下载的并发数</string>
     <string name="pe_download_threads_title">下载线程数</string>
     <string name="pe_download_threads_summary">1 使用单连接，2–32 将大文件分段并发下载</string>
+    <string name="mods_dependency_check">检查依赖</string>
+    <string name="mods_dependency_check_empty">未发现缺失前置或重复模组</string>
+    <string name="mods_dependency_missing">缺少前置：%1$s 需要 %2$s</string>
+    <string name="mods_dependency_duplicate">重复模组：%1$s（%2$s）</string>
 </resources>

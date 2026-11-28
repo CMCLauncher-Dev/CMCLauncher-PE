@@ -47,7 +47,8 @@ object QuiltModMetadataReader : ModMetadataReader {
                             description = quiltLoader.metadata.description,
                             version = quiltLoader.version,
                             authors = contributors,
-                            icon = icon
+                            icon = icon,
+                            dependencies = dependencyMap(quiltLoader)
                         )
                     }
                 } catch (e: Exception) {
@@ -92,10 +93,18 @@ object QuiltModMetadataReader : ModMetadataReader {
                     description = quiltLoader.metadata.description,
                     version = quiltLoader.version,
                     authors = contributors,
-                    icon = icon
+                    icon = icon,
+                    dependencies = dependencyMap(quiltLoader)
                 )
             }
         }
+    }
+
+    private fun dependencyMap(loader: QuiltModMetadata.QuiltLoader): Map<String, String> {
+        return loader.depends
+            ?.filter { it.optional != true && it.unless == null }
+            ?.associate { it.id to "" }
+            ?: emptyMap()
     }
 
     private fun parseContributors(contributors: JsonObject?): List<String> {

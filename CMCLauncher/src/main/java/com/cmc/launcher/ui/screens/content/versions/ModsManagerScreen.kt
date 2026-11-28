@@ -41,6 +41,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import com.cmc.launcher.ui.components.StaticBusyIndicator
+import com.cmc.launcher.ui.components.SimpleAlertDialog
 import com.cmc.launcher.ui.components.StaticDropdownMenu as DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,6 +94,9 @@ import com.cmc.launcher.game.version.installed.Version
 import com.cmc.launcher.game.version.installed.VersionFolders
 import com.cmc.launcher.game.version.mod.AllModReader
 import com.cmc.launcher.game.version.mod.LocalMod
+import com.cmc.launcher.game.version.mod.ModIssue
+import com.cmc.launcher.game.version.mod.ModIssueChecker
+import com.cmc.launcher.game.version.mod.ModIssueType
 import com.cmc.launcher.game.version.mod.RemoteMod
 import com.cmc.launcher.game.version.mod.isDisabled
 import com.cmc.launcher.game.version.mod.isEnabled
@@ -637,6 +641,37 @@ fun ModsManagerScreen(
                 when (viewModel.modsState) {
                     LoadingState.None -> {
                         var modsOperation by remember { mutableStateOf<ModsOperation>(ModsOperation.None) }
+                        var dependencyIssues by remember { mutableStateOf<List<ModIssue>?>(null) }
+                        dependencyIssues?.let { issues ->
+                            SimpleAlertDialog(
+                                title = stringResource(R.string.mods_dependency_check),
+                                text = {
+                                    Column {
+                                        if (issues.isEmpty()) {
+                                            Text(stringResource(R.string.mods_dependency_check_empty))
+                                        } else {
+                                            issues.forEach { issue ->
+                                                Text(
+                                                    text = when (issue.type) {
+                                                        ModIssueType.MISSING_DEPENDENCY -> stringResource(
+                                                            R.string.mods_dependency_missing,
+                                                            issue.modName,
+                                                            issue.detail
+                                                        )
+                                                        ModIssueType.DUPLICATE_ID -> stringResource(
+                                                            R.string.mods_dependency_duplicate,
+                                                            issue.modName,
+                                                            issue.versions.ifBlank { issue.detail }
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                onDismiss = { dependencyIssues = null }
+                            )
+                        }
 
                         fun runProgress(task: () -> Unit) {
                             viewModel.doInScope {
@@ -702,6 +737,15 @@ fun ModsManagerScreen(
                                                 if (filter == viewModel.stateFilter) Icon(painterResource(R.drawable.ic_check), null)
                                             },
                                             onClick = { viewModel.updateStateFilter(filter, context); dismiss() }
+                                        )
+                                    }
+                                    if (hasModLoader) {
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.mods_dependency_check)) },
+                                            onClick = {
+                                                dependencyIssues = ModIssueChecker.check(viewModel.allMods.map { it.localMod })
+                                                dismiss()
+                                            }
                                         )
                                     }
                                 }

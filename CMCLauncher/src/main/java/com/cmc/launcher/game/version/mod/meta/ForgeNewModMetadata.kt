@@ -12,8 +12,20 @@ data class ForgeNewModMetadata(
     @SerializedName("license")
     val license: String? = null,
     @SerializedName("mods")
-    val mods: List<Mod> = emptyList()
+    val mods: List<Mod> = emptyList(),
+    @SerializedName("dependencies")
+    val dependencies: List<Dependency> = emptyList()
 ) {
+    data class Dependency(
+        @SerializedName("modId")
+        val modId: String = "",
+        @SerializedName("mandatory")
+        val mandatory: Boolean = true,
+        @SerializedName("versionRange")
+        val versionRange: String = "",
+        @SerializedName("side")
+        val side: String? = null
+    )
     data class Mod(
         @SerializedName("modId")
         val modId: String,

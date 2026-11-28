@@ -15,8 +15,18 @@ data class QuiltModMetadata(
         @SerializedName("version")
         val version: String,
         @SerializedName("metadata")
-        val metadata: Metadata
+        val metadata: Metadata,
+        @SerializedName("depends")
+        val depends: List<Dependency>? = null
     ) {
+        data class Dependency(
+            @SerializedName("id")
+            val id: String,
+            @SerializedName("optional")
+            val optional: Boolean = false,
+            @SerializedName("unless")
+            val unless: JsonObject? = null
+        )
         data class Metadata(
             @SerializedName("name")
             val name: String,

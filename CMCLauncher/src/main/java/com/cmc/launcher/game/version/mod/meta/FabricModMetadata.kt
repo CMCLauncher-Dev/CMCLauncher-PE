@@ -25,7 +25,9 @@ data class FabricModMetadata(
     @SerializedName("authors")
     val authors: List<FabricModAuthor>? = null,
     @SerializedName("contact")
-    val contact: Map<String, String>? = null
+    val contact: Map<String, String>? = null,
+    @SerializedName("depends")
+    val depends: Map<String, com.google.gson.JsonElement>? = null
 ) {
     @JsonAdapter(FabricModAuthorSerializer::class)
     data class FabricModAuthor(

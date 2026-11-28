@@ -154,4 +154,8 @@
     <string name="pe_download_concurrency_caption">Concurrency for segmented large-file downloads</string>
     <string name="pe_download_threads_title">Download threads</string>
     <string name="pe_download_threads_summary">1 uses a single connection; 2–32 splits large files into parallel segments</string>
+    <string name="mods_dependency_check">Check dependencies</string>
+    <string name="mods_dependency_check_empty">No missing dependencies or duplicate mods found</string>
+    <string name="mods_dependency_missing">Missing dependency: %1$s needs %2$s</string>
+    <string name="mods_dependency_duplicate">Duplicate mod: %1$s (%2$s)</string>
 </resources>

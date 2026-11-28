@@ -56,8 +56,19 @@ object FabricModMetadataReader : ModMetadataReader {
             description = metadata.description,
             version = metadata.version,
             authors = authors,
-            icon = icon
+            icon = icon,
+            dependencies = dependencyMap(metadata)
         )
+    }
+
+    private fun dependencyMap(metadata: FabricModMetadata): Map<String, String> {
+        return metadata.depends?.mapValues { (_, value) ->
+            when {
+                value.isJsonArray -> value.asJsonArray.mapNotNull { it.asJsonPrimitive?.asString }.joinToString(",")
+                value.isJsonPrimitive -> value.asString
+                else -> ""
+            }
+        } ?: emptyMap()
     }
 
     private fun readWithApacheZip(modFile: File): LocalMod {
@@ -85,7 +96,8 @@ object FabricModMetadataReader : ModMetadataReader {
                     description = metadata.description,
                     version = metadata.version,
                     authors = authors,
-                    icon = icon
+                    icon = icon,
+                    dependencies = dependencyMap(metadata)
                 )
             }
         }
